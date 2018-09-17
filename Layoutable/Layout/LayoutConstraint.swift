@@ -51,7 +51,7 @@ extension LayoutRelation: CustomDebugStringConvertible{
 }
 
 public struct LayoutPriority: RawRepresentable,ExpressibleByFloatLiteral{
-  public init?(rawValue: Double) {
+  public init(rawValue: Double) {
     self.rawValue = rawValue
   }
   

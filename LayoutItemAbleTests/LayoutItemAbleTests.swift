@@ -23,6 +23,28 @@ class LayoutableTests: XCTestCase {
     }
 
     func testExample() {
+      let node = TestNode()
+      let node1 = TestNode()
+      let node2 = TestNode()
+      
+      node.addSubnode(node1)
+      node.addSubnode(node2)
+      
+      node1.size == (30,30)
+      node2.size == (40,40)
+      
+      [node,node1].equal(.centerY,.left)
+      
+      [node2,node].equal(.top,.bottom,.centerY,.right)
+      
+      [node1,node2].space(10, axis: .horizontal)
+      let c =  node.left == node2.left + 10
+      c.constant = 100
+      node.layoutIfEnabled()
+      
+      print(node.frame)
+      print(node1.frame)
+      print(node2.frame)
     }
 
     func testNestPerformance() {
