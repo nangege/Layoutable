@@ -25,42 +25,41 @@ import Layoutable
     ```swift
      import Layoutable
 	
-     class TestNode: Layoutable{
+    class TestNode: Layoutable{
 	  
-	public init() {}
+	    public init() {}
 	  
-	var size = CGSize.zero
+	    var size = CGSize.zero
 	  
-	func addSubnode(_ node: TestNode){
-	  subItems.append(node)
-	  node.superItem = self
-        }
-	  
-	  
-	// needed by Layoutable protocol
-	var manager: LayoutManager = LayoutManager()
-	  
-	var intrinsicContentSize: CGSize {
-	  return size
-	}
-	  
-	weak var superItem: Layoutable? = nil
-	  
-	var subItems = [Layoutable]()
-	  
-	var frame: CGRect = .zero
-	
-	func layoutSubnode() {}
-	  
-	func updateConstraint() {}
-	  
-	func contentSizeFor(maxWidth: CGFloat) -> CGSize {
-	  return .zero
-        }
-	  
+	    func addSubnode(_ node: TestNode){
+	      subItems.append(node)
+	      node.superItem = self
       }
+	  
+	  
+	    // needed by Layoutable protocol
+	    var manager: LayoutManager = LayoutManager()
+	  
+	    var intrinsicContentSize: CGSize {
+	      return size
+	    }
+	  
+	    weak var superItem: Layoutable? = nil
+	  
+	    var subItems = [Layoutable]()
+	  
+	    var frame: CGRect = .zero
+	
+	    func layoutSubnode() {}
+	  
+	    func updateConstraint() {}
+	  
+	    func contentSizeFor(maxWidth: CGFloat) -> CGSize {
+	      return .zero
+       }
+     }
 
-      ```
+    ```
 
 2. Use Layout object to Layout
     
@@ -95,19 +94,20 @@ import Layoutable
 
 1. Basic attributes
   
-  Like Autolayout, Layoutable support both Equal, lessThanOrEqual and greatThanOrEqualTo
+    Like Autolayout, Layoutable support both Equal, lessThanOrEqual and greatThanOrEqualTo
 
     ```swift
-    node1.left.equalTo(node2.left)
-    node1.top.greatThanOrEqualTo(node2.top)
-    node1.bottom.lessThanOrEqualTo(node2.bottom)
+     node1.left.equalTo(node2.left)
+     node1.top.greatThanOrEqualTo(node2.top)
+     node1.bottom.lessThanOrEqualTo(node2.bottom)
     ```
-   or
+     or
 	
     ```swift
-    node1.left == node2.left   // can bve write as node1.left == node2  
-    node1.top >= node2.top     // can bve write as node1.top >= node2
-    node1.bottom <= node2.bottom // can bve write as node1.bottom <= node2
+     node1.left == node2.left   // can bve write as node1.left == node2  
+     node1.top >= node2.top     // can bve write as node1.top >= node2
+     node1.bottom <= node2.bottom // can bve write as node1.bottom <= node2
+    
     ```
 2. Composit attribute
 
@@ -119,7 +119,7 @@ import Layoutable
     node.topLeft.equalTo(node2, offset: (10,5))
       
    ```
-   Or
+   or
    
    ```swift
     node1.xSide == node2.xSide + (10,10) 
@@ -144,6 +144,7 @@ import Layoutable
     ```swift
     let c =  node.left == node2.left + 10
     c.constant = 100
+    
     ```   
  
 ## Supported attributes
