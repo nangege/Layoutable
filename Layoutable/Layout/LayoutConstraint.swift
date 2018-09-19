@@ -117,7 +117,7 @@ open class LayoutConstraint{
     // maybe this code should not be here, need to be fix
     firstAnchor.item.manager.translateRectIntoConstraints = false
     firstAnchor.item.addConstraint(self)
-    secondAnchor?.item.manager.pinedCount += 1
+    secondAnchor?.item.manager.pinedConstraints.insert(self)
   }
   
   public let firstAnchor: AnchorType
@@ -144,7 +144,17 @@ open class LayoutConstraint{
     }
   }
   
-  open var isActive: Bool = false
+  open var isActive: Bool = false{
+    didSet{
+      if oldValue != isActive{
+        if isActive{
+          firstAnchor.item.addConstraint(self)
+        }else{
+          firstAnchor.item.removeConstraint(self)
+        }
+      }
+    }
+  }
   
   fileprivate weak var solver: SimplexSolver? = nil
   
@@ -207,12 +217,12 @@ extension LayoutConstraint{
   
   public func remove(){
     _ = try? solver?.remove(constraint: constraint)
-    secondAnchor?.item.manager.pinedCount -= 1
+    secondAnchor?.item.manager.pinedConstraints.remove(self)
     solver = nil
   }
 
-  func active(_ active: Bool = true){
-    self.isActive = true
+  class func active(_ constraints: [LayoutConstraint]){
+    constraints.forEach{ $0.isActive = true}
   }
   
   @discardableResult func priority(_ priority: LayoutPriority) -> LayoutConstraint{

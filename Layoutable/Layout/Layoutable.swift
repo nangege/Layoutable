@@ -63,15 +63,15 @@ public protocol Layoutable: class{
 }
 
 extension Layoutable{
-  public func addConstraint(_ constraint: LayoutConstraint){
+  func addConstraint(_ constraint: LayoutConstraint){
     manager.addConstraint(constraint)
   }
   
-  public func removeConstraint(_ constraint: LayoutConstraint){
+  func removeConstraint(_ constraint: LayoutConstraint){
     manager.removeConstraint(constraint)
   }
   
-  public func removeConstraints(_ constraints: [LayoutConstraint]){
+  func removeConstraints(_ constraints: [LayoutConstraint]){
     constraints.forEach {
       self.removeConstraint($0)
     }
@@ -83,7 +83,7 @@ extension Layoutable{
   }
   
   public var allConstraints: [LayoutConstraint]{
-    return manager.constraints
+    return Array(manager.constraints) +  Array(manager.pinedConstraints)
   }
   
   /// disable cassowary Layout Enginer
@@ -178,7 +178,7 @@ extension Layoutable{
   private func layoutFirstPass(){
     if manager.layoutNeedsUpdate{
       updateContentSize()
-    }else if manager.translateRectIntoConstraints && manager.pinedCount > 0{
+    }else if manager.translateRectIntoConstraints && !manager.pinedConstraints.isEmpty{
       manager.updateSize(frame.size, node: self, priority: .required)
       manager.updateOrigin(frame.origin, node: self)
       
@@ -344,18 +344,18 @@ final public class LayoutManager{
   public var offset = CGPoint.zero
   
   /// same as translateAutoSizingMaskIntoConstraints in autolayout
-  /// if true, current frame of this item will be add to layout engine
+  /// if true, current frame of this item will be added to layout engine
   public var translateRectIntoConstraints = true
   
   public var enabled = true
   
   public var layoutNeedsUpdate = false
   
-  var pinedCount = 0
+  var pinedConstraints = Set<LayoutConstraint>()
   
-  var constraints = [LayoutConstraint]()
+  var constraints = Set<LayoutConstraint>()
   
-  private var newAddConstraints = [LayoutConstraint]()
+  private var newAddConstraints = Set<LayoutConstraint>()
   
   // frequency used Constraint,hold directly to improve performance
   var width: LayoutConstraint?
@@ -382,21 +382,19 @@ final public class LayoutManager{
     if let solver = self.solver{
       newAddConstraints.forEach {
         $0.addToSolver(solver)
-        constraints.append($0)
+        constraints.insert($0)
       }
       newAddConstraints.removeAll()
     }
   }
   
   func addConstraint(_ constraint: LayoutConstraint){
-    newAddConstraints.append(constraint)
+    newAddConstraints.insert(constraint)
   }
   
   func removeConstraint(_ constraint: LayoutConstraint){
-    if let index = constraints.index(of: constraint){
-      constraints.remove(at: index)
-      constraint.remove()
-    }
+    newAddConstraints.remove(constraint)
+    constraints.remove(constraint)
   }
   
   /// update content size Constraint
