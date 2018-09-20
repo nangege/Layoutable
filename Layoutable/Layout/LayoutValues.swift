@@ -31,8 +31,6 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import UIKit
-
 public struct LayoutValues{
   public var frame = CGRect.zero
   public var subLayout = [LayoutValues]()

@@ -6,8 +6,6 @@
 //  Copyright © 2018 Tang Nan. All rights reserved.
 //
 
-import Foundation
-
 // use tuple as data struct to make it easy to write
 // like node.size = (30,30) compare to UIKit node.size = CGSize(width: height: 30)
 public typealias Size = (width: CGFloat, height: CGFloat)
