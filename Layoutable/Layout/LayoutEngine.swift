@@ -33,7 +33,7 @@
 
 import Cassowary
 
-class LayoutEngine{
+final class LayoutEngine{
   
   static let solverPool = NSMapTable<AnyObject,SimplexSolver>.weakToStrongObjects()
   

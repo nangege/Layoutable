@@ -32,7 +32,7 @@
 
 import Cassowary
 
-class LayoutProperty{
+final class LayoutProperty{
   
   init(scale: Double) {
     self.scale = scale

@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		3806BA17214F628E00D6981F /* Cassowary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 380AD772214F603300C94CDD /* Cassowary.framework */; };
 		3806BA1A214F635100D6981F /* Cassowary.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 380AD772214F603300C94CDD /* Cassowary.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		380AD773214F603300C94CDD /* Cassowary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 380AD772214F603300C94CDD /* Cassowary.framework */; };
+		38335FE22154681D0084DC0C /* LayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38335FE12154681D0084DC0C /* LayoutManager.swift */; };
 		3858B93B213E76D200CE161E /* TestNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3858B93A213E76D200CE161E /* TestNode.swift */; };
 		38C105CA2139919B00993530 /* Layoutable.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38C105C02139919B00993530 /* Layoutable.framework */; };
 		38C105CF2139919B00993530 /* LayoutItemAbleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C105CE2139919B00993530 /* LayoutItemAbleTests.swift */; };
@@ -49,6 +49,7 @@
 
 /* Begin PBXFileReference section */
 		380AD772214F603300C94CDD /* Cassowary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cassowary.framework; path = Carthage/Build/iOS/Cassowary.framework; sourceTree = "<group>"; };
+		38335FE12154681D0084DC0C /* LayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutManager.swift; sourceTree = "<group>"; };
 		3858B93A213E76D200CE161E /* TestNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestNode.swift; sourceTree = "<group>"; };
 		38C105C02139919B00993530 /* Layoutable.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Layoutable.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		38C105C32139919B00993530 /* Layoutable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Layoutable.h; sourceTree = "<group>"; };
@@ -71,7 +72,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				380AD773214F603300C94CDD /* Cassowary.framework in Frameworks */,
 				38C1068A213999B500993530 /* Cassowary.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -135,6 +135,7 @@
 				38C105F62139920800993530 /* LayoutAnchor.swift */,
 				38C105F72139920800993530 /* LayoutValues.swift */,
 				38C105F82139920800993530 /* Layoutable.swift */,
+				38335FE12154681D0084DC0C /* LayoutManager.swift */,
 				38C105F92139920800993530 /* LayoutConstraint.swift */,
 				38C105F32139920800993530 /* CompositAnchor.swift */,
 			);
@@ -266,6 +267,7 @@
 				38C105FF2139920800993530 /* Layoutable.swift in Sources */,
 				38C106002139920800993530 /* LayoutConstraint.swift in Sources */,
 				38C105FB2139920800993530 /* LayoutEngine.swift in Sources */,
+				38335FE22154681D0084DC0C /* LayoutManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

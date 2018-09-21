@@ -62,19 +62,6 @@ public protocol Layoutable: class{
 }
 
 extension Layoutable{
-  func addConstraint(_ constraint: LayoutConstraint){
-    manager.addConstraint(constraint)
-  }
-  
-  func removeConstraint(_ constraint: LayoutConstraint){
-    manager.removeConstraint(constraint)
-  }
-  
-  func removeConstraints(_ constraints: [LayoutConstraint]){
-    constraints.forEach {
-      self.removeConstraint($0)
-    }
-  }
   
   /// the caculated frame of this layout item
   public var layoutRect: CGRect {
@@ -114,7 +101,6 @@ extension Layoutable{
     updateLayout()
   }
   
-  
   /// layout info of the current node hierarchy
   /// provide for case of layout cache
   public var layoutValues: LayoutValues{
@@ -128,7 +114,6 @@ extension Layoutable{
     return cache
   }
   
-  
   /// layout node hierarchy with frame
   ///
   /// - Parameter layout: layout hierarchy from this root node
@@ -140,120 +125,9 @@ extension Layoutable{
       node.apply(layout.subLayout[index])
     }
   }
-  
-  func updateLayout(){
-    // need to be optimized
-    if manager.solver != nil && !manager.translateRectIntoConstraints{
-      frame = layoutRect
-    }
-    subItems.forEach{ $0.updateLayout() }
-  }
-  
-  private func addConstraintTo(_ solver: SimplexSolver){
-    manager.addConstraintTo(solver)
-    subItems.forEach { $0.addConstraintTo(solver) }
-  }
-  
-  private func updateContentSize(){
-    if manager.translateRectIntoConstraints{
-      return
-    }
-    let size = intrinsicContentSize
-    manager.updateSize(size, node: self)
-  }
-  
-  private var ancestorItem: Layoutable{
-    if let superItem = superItem{
-      return superItem.ancestorItem
-    }
-    return self
-  }
-  
-  private func updateAllConstraint(){
-    updateConstraint()
-    manager.updateConstraint()
-  }
-  
-  private func layoutFirstPass(){
-    if manager.layoutNeedsUpdate{
-      updateContentSize()
-    }else if manager.translateRectIntoConstraints && !manager.pinedConstraints.isEmpty{
-      manager.updateSize(frame.size, node: self, priority: .required)
-      manager.updateOrigin(frame.origin, node: self)
-      
-      /// a little weird here, when update size or origin,some constraints will be add to this item
-      /// this item's translateRectIntoConstraints will be set to false
-      /// correct it here. need a better way.
-      manager.translateRectIntoConstraints = true
-    }
-    updateAllConstraint()
-    subItems.forEach { $0.layoutFirstPass() }
-  }
-  
-  /// second layout pass is used to adjust contentSize height
-  /// such as TextNode,at this time ,width for textNode is determined
-  /// so we can know how manay lines this text should have
-  private func layoutSecondPass(){
-    if manager.layoutNeedsUpdate && !manager.translateRectIntoConstraints{
-      let size = contentSizeFor(maxWidth: layoutRect.width)
-      if size != .zero{
-        manager.updateSize(size, node: self)
-      }
-    }
-    
-    subItems.forEach{ $0.layoutSecondPass()}
-    manager.layoutNeedsUpdate = false
-  }
 }
 
-extension Layoutable{
-  
-  private var depth: Int{
-    if let item = superItem{
-      return item.depth + 1
-    }else{
-      return 1
-    }
-  }
-  
-  /// find common super item with another LayoutItem
-  /// - Parameter item: item to find common superNode with
-  /// - Returns: first super node for self and node
-  func commonSuperItem(with item: Layoutable?) -> Layoutable?{
-    
-    guard let item = item else{
-      return self
-    }
-    
-    var depth1 = depth
-    var depth2 = item.depth
-    
-    var superItem1: Layoutable = self
-    var superItem2 = item
-    
-    while depth1 > depth2 {
-      superItem1 = superItem1.superItem!
-      depth1 -= 1
-    }
-    
-    while depth2 > depth1 {
-      superItem2 = superItem2.superItem!
-      depth2 -= 1
-    }
-    
-    while !(superItem1 === superItem2) {
-      if superItem1.superItem == nil{
-        return nil
-      }
-      superItem1 = superItem1.superItem!
-      superItem2 = superItem2.superItem!
-    }
-    
-    return superItem1
-  }
-  
-}
-
+// MARK: - public property
 extension Layoutable{
   public var left: XAxisAnchor{
     return XAxisAnchor(item: self, attribute: .left)
@@ -329,111 +203,134 @@ extension Layoutable{
 }
 
 
-/// LayoutManager hold and handle all the properties needed for layout
-/// like SimplexSolver, LayoutProperty ...
-/// so that the class conform to LayoutItem does not need to provide those properties
-final public class LayoutManager{
-  
-  weak var solver: SimplexSolver?
-  
-  var variable = LayoutProperty(scale: Double(UIScreen.main.scale))
-  
-  // This property is used to adjust position after layout pass
-  // It is useful for simplefy layout for irregular layout
-  public var offset = CGPoint.zero
-  
-  /// same as translateAutoSizingMaskIntoConstraints in autolayout
-  /// if true, current frame of this item will be added to layout engine
-  public var translateRectIntoConstraints = true
-  
-  public var enabled = true
-  
-  public var layoutNeedsUpdate = false
-  
-  var pinedConstraints = Set<LayoutConstraint>()
-  
-  var constraints = Set<LayoutConstraint>()
-  
-  private var newAddConstraints = Set<LayoutConstraint>()
-  
-  // frequency used Constraint,hold directly to improve performance
-  var width: LayoutConstraint?
-  var height: LayoutConstraint?
-  
-  /// used for frame translated constraint
-  var minX: LayoutConstraint?
-  var minY: LayoutConstraint?
-  
-  public init(){}
-  
-  func addConstraintTo(_ solver: SimplexSolver){
-    
-    // maybe need optiomize
-    // find a better way to manager constraint cycle
-    // when to add ,when to remove
-    self.solver = solver
-    variable.solver = solver
-    updateConstraint()
-  }
-
-  /// add new constraints to current solver
-  func updateConstraint(){
-    if let solver = self.solver{
-      newAddConstraints.forEach {
-        $0.addToSolver(solver)
-        constraints.insert($0)
-      }
-      newAddConstraints.removeAll()
-    }
-  }
+// MARK: - internal function
+extension Layoutable{
   
   func addConstraint(_ constraint: LayoutConstraint){
-    newAddConstraints.insert(constraint)
+    manager.addConstraint(constraint)
   }
   
   func removeConstraint(_ constraint: LayoutConstraint){
-    newAddConstraints.remove(constraint)
-    constraints.remove(constraint)
+    manager.removeConstraint(constraint)
   }
   
-  /// update content size Constraint
-  func updateSize(_ size: CGSize,node: Layoutable, priority: LayoutPriority = .strong){
-
-    if size.width != UIView.noIntrinsicMetric{
-      if let width = width{
-        width.constant = size.width
-      }else{
-        width =  node.width == size.width ~ priority
-      }
-    }
-
-    if size.height != UIView.noIntrinsicMetric{
-      if let height = height{
-        height.constant = size.height
-      }else{
-        height = node.height == size.height ~ priority
-      }
+  func removeConstraints(_ constraints: [LayoutConstraint]){
+    constraints.forEach {
+      self.removeConstraint($0)
     }
   }
   
-  /// update content size Constraint
-  func updateOrigin(_ point: CGPoint,node: Layoutable, priority: LayoutPriority = .required){
+  /// find common super item with another LayoutItem
+  /// - Parameter item: item to find common superNode with
+  /// - Returns: first super node for self and node
+  func commonSuperItem(with item: Layoutable?) -> Layoutable?{
     
-    if let minX = minX{
-      minX.constant = point.x
-    }else{
-      minX =  node.left == point.x ~ priority
+    guard let item = item else{
+      return self
     }
     
-    if let minY = minY{
-      minY.constant = point.y
+    var depth1 = depth
+    var depth2 = item.depth
+    
+    var superItem1: Layoutable = self
+    var superItem2 = item
+    
+    while depth1 > depth2 {
+      superItem1 = superItem1.superItem!
+      depth1 -= 1
+    }
+    
+    while depth2 > depth1 {
+      superItem2 = superItem2.superItem!
+      depth2 -= 1
+    }
+    
+    while !(superItem1 === superItem2) {
+      if superItem1.superItem == nil{
+        return nil
+      }
+      superItem1 = superItem1.superItem!
+      superItem2 = superItem2.superItem!
+    }
+    
+    return superItem1
+  }
+
+}
+
+// MARK: - private function
+extension Layoutable{
+  
+  private var depth: Int{
+    if let item = superItem{
+      return item.depth + 1
     }else{
-      minY = node.top == point.y ~ priority
+      return 1
     }
   }
   
-  /// final caculated rect for this item
-  var layoutRect: CGRect{
-    return variable.frame.offsetBy(dx: offset.x,dy: offset.y)
+  private func updateLayout(){
+    // need to be optimized
+    if manager.solver != nil && !manager.translateRectIntoConstraints{
+      frame = layoutRect
+    }
+    subItems.forEach{ $0.updateLayout() }
   }
+  
+  private func addConstraintTo(_ solver: SimplexSolver){
+    manager.addConstraintTo(solver)
+    subItems.forEach { $0.addConstraintTo(solver) }
+  }
+  
+  private func updateContentSize(){
+    if manager.translateRectIntoConstraints{
+      return
+    }
+    let size = intrinsicContentSize
+    manager.updateSize(size, node: self)
+  }
+  
+  private var ancestorItem: Layoutable{
+    if let superItem = superItem{
+      return superItem.ancestorItem
+    }
+    return self
+  }
+  
+  private func updateAllConstraint(){
+    updateConstraint()
+    manager.updateConstraint()
+  }
+  
+  private func layoutFirstPass(){
+    if manager.layoutNeedsUpdate{
+      updateContentSize()
+    }else if manager.translateRectIntoConstraints && !manager.pinedConstraints.isEmpty{
+      manager.updateSize(frame.size, node: self, priority: .required)
+      manager.updateOrigin(frame.origin, node: self)
+      
+      /// a little weird here, when update size or origin,some constraints will be add to this item
+      /// this item's translateRectIntoConstraints will be set to false
+      /// correct it here. need a better way.
+      manager.translateRectIntoConstraints = true
+    }
+    updateAllConstraint()
+    subItems.forEach { $0.layoutFirstPass() }
+  }
+  
+  /// second layout pass is used to adjust contentSize height
+  /// such as TextNode,at this time ,width for textNode is determined
+  /// so we can know how manay lines this text should have
+  private func layoutSecondPass(){
+    if manager.layoutNeedsUpdate && !manager.translateRectIntoConstraints{
+      let size = contentSizeFor(maxWidth: layoutRect.width)
+      if size != .zero{
+        manager.updateSize(size, node: self)
+      }
+    }
+    
+    subItems.forEach{ $0.layoutSecondPass()}
+    manager.layoutNeedsUpdate = false
+  }
+  
 }
