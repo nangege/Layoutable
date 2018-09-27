@@ -5,17 +5,31 @@
 //  Created by nangezao on 2018/8/24.
 //  Copyright © 2018 Tang Nan. All rights reserved.
 //
-
-// use tuple as data struct to make it easy to write
-// like node.size = (30,30) compare to UIKit node.size = CGSize(width: height: 30)
-public typealias Size = (width: CGFloat, height: CGFloat)
-public typealias Offset = (x: CGFloat, y: CGFloat)
-public typealias Insets = (top: CGFloat,left: CGFloat, bottom: CGFloat,right: CGFloat)
-public typealias XSideInsets = (left: CGFloat, right: CGFloat)
-public typealias YSideInsets = (top: CGFloat, bottom: CGFloat)
-public typealias EdgeInsets = (top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat)
-
-public let EdgeInsetsZero: EdgeInsets = (0,0,0,0)
+/// Permission is hereby granted, free of charge, to any person obtaining a copy
+/// of this software and associated documentation files (the "Software"), to deal
+/// in the Software without restriction, including without limitation the rights
+/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+/// copies of the Software, and to permit persons to whom the Software is
+/// furnished to do so, subject to the following conditions:
+///
+/// The above copyright notice and this permission notice shall be included in
+/// all copies or substantial portions of the Software.
+///
+/// Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
+/// distribute, sublicense, create a derivative work, and/or sell copies of the
+/// Software in any work that is designed, intended, or marketed for pedagogical or
+/// instructional purposes related to programming, coding, application development,
+/// or information technology.  Permission for such use, copying, modification,
+/// merger, publication, distribution, sublicensing, creation of derivative works,
+/// or sale is expressly withheld.
+///
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+/// THE SOFTWARE.
 
 public enum LayoutAxis{
   case horizontal
@@ -107,7 +121,7 @@ final public class XSideAnchor: CompositAnchor{
     return equalTo(anchor.item, insets: insets)
   }
   
-  @discardableResult public func equalTo(_ layoutItem: Layoutable, insets: CGFloat) -> [LayoutConstraint]{
+  @discardableResult public func equalTo(_ layoutItem: Layoutable, insets: Double) -> [LayoutConstraint]{
     return equalTo(layoutItem, insets: (insets, insets))
   }
   
@@ -115,7 +129,7 @@ final public class XSideAnchor: CompositAnchor{
     return self + inset
   }
   
-  public func insets(_ inset: CGFloat) -> CompositExpression<XSideAnchor, CGFloat>{
+  public func insets(_ inset: Double) -> CompositExpression<XSideAnchor, Double>{
     return self + inset
   }
   
@@ -137,7 +151,7 @@ final public class YSideAnchor: CompositAnchor{
     return equalTo(anchor.item, insets: insets)
   }
   
-  @discardableResult public func equalTo(_ layoutItem: Layoutable, insets: CGFloat) -> [LayoutConstraint]{
+  @discardableResult public func equalTo(_ layoutItem: Layoutable, insets: Double) -> [LayoutConstraint]{
     return equalTo(layoutItem, insets: (insets, insets))
   }
   
@@ -145,7 +159,7 @@ final public class YSideAnchor: CompositAnchor{
     return self + inset
   }
   
-  public func insets(_ inset: CGFloat) -> CompositExpression<YSideAnchor, CGFloat>{
+  public func insets(_ inset: Double) -> CompositExpression<YSideAnchor, Double>{
     return self + inset
   }
 
@@ -205,7 +219,7 @@ final public class CompositExpression<AnchorType, valueType>{
   return lhs.equalTo(rhs.anchor, offset: rhs.value)
 }
 
-@discardableResult public func == (lhs: XSideAnchor, rhs: CompositExpression<Layoutable, CGFloat>) -> [LayoutConstraint]{
+@discardableResult public func == (lhs: XSideAnchor, rhs: CompositExpression<Layoutable, Double>) -> [LayoutConstraint]{
   return lhs.equalTo(rhs.anchor, insets: rhs.value)
 }
 
@@ -213,7 +227,7 @@ final public class CompositExpression<AnchorType, valueType>{
   return lhs.equalTo(rhs.anchor, insets: rhs.value)
 }
 
-@discardableResult public func == (lhs: XSideAnchor, rhs: CompositExpression<XSideAnchor, CGFloat>) -> [LayoutConstraint]{
+@discardableResult public func == (lhs: XSideAnchor, rhs: CompositExpression<XSideAnchor, Double>) -> [LayoutConstraint]{
   return lhs.equalTo(rhs.anchor.item, insets: rhs.value)
 }
 
@@ -221,7 +235,7 @@ final public class CompositExpression<AnchorType, valueType>{
   return lhs.equalTo(rhs.anchor, insets: rhs.value)
 }
 
-@discardableResult public func == (lhs: YSideAnchor, rhs: CompositExpression<Layoutable, CGFloat>) -> [LayoutConstraint]{
+@discardableResult public func == (lhs: YSideAnchor, rhs: CompositExpression<Layoutable, Double>) -> [LayoutConstraint]{
   return lhs.equalTo(rhs.anchor, insets: rhs.value)
 }
 
@@ -229,7 +243,7 @@ final public class CompositExpression<AnchorType, valueType>{
   return lhs.equalTo(rhs.anchor, insets: rhs.value)
 }
 
-@discardableResult public func == (lhs: YSideAnchor, rhs: CompositExpression<YSideAnchor, CGFloat>) -> [LayoutConstraint]{
+@discardableResult public func == (lhs: YSideAnchor, rhs: CompositExpression<YSideAnchor, Double>) -> [LayoutConstraint]{
   return lhs.equalTo(rhs.anchor.item, insets: rhs.value)
 }
 
@@ -264,7 +278,7 @@ public extension Array where Element == Layoutable{
     return constraints
   }
   
-  @discardableResult func space(_ space: CGFloat,axis: LayoutAxis = .vertical) -> [LayoutConstraint]{
+  @discardableResult func space(_ space: Double,axis: LayoutAxis = .vertical) -> [LayoutConstraint]{
     return traverse { (preItem, currentItem) -> (LayoutConstraint) in
       switch axis{
       case .horizontal: return currentItem.left == preItem.right + space

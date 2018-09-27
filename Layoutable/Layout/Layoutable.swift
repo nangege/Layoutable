@@ -39,35 +39,31 @@ public protocol Layoutable: class{
 
   var manager: LayoutManager{ get }
   
-  /// contentSize of node like,just like the one in UIKit
-  var intrinsicContentSize: CGSize { get }
   var superItem: Layoutable? { get }
   var subItems: [Layoutable]{ get }
-  var frame: CGRect { get set}
+  var layoutRect: Rect { get set}
   
   /// like layoutSubviews in UIView
   /// this method will be called after layout pass
   /// frame of this item is determined
-  func layoutSubnode()
+  func layoutSubItems()
   
   /// override point.
   func updateConstraint()
+  
+  /// contentSize of node like,just like intrinsicContentSize in UIKit
+  var itemIntrinsicContentSize: Size { get }
   
   /// contentSize of node, unlike intrinsicContentSize, this time width of node is determined
   /// this method is used to adjust height of this item
   /// such as text item, if numberOfLines is 0, we need maxWidth to determine number of lines and text height
   /// - Parameter maxWidth: maxWidth of this node
   /// - Returns: size of content
-  func contentSizeFor(maxWidth: CGFloat) -> CGSize
+  func contentSizeFor(maxWidth: Double) -> Size
 }
 
 // public function
 extension Layoutable{
-  
-  /// the caculated frame of this layout item
-  public var layoutRect: CGRect {
-    return manager.layoutRect
-  }
   
   public var allConstraints: [LayoutConstraint]{
     return Array(manager.constraints) +  Array(manager.pinedConstraints)
@@ -107,9 +103,9 @@ extension Layoutable{
   public var layoutValues: LayoutValues{
     var cache = LayoutValues()
     if manager.isConstraintValidRect{
-      cache.frame = layoutRect
+      cache.frame = manager.layoutRect
     }else{
-      cache.frame = frame
+      cache.frame = layoutRect
     }
     cache.subLayout = subItems.map{ $0.layoutValues }
     return cache
@@ -120,7 +116,7 @@ extension Layoutable{
   /// - Parameter layout: layout hierarchy from this root node
   /// - make sure node hierarchy is exactly the same when you get this layoutValues
   public func apply(_ layout: LayoutValues){
-    frame = layout.frame
+    layoutRect = layout.frame
     for (index, node) in subItems.enumerated(){
       node.apply(layout.subLayout[index])
     }
@@ -272,7 +268,7 @@ extension Layoutable{
   private func updateLayout(){
     // need to be optimized
     if manager.isConstraintValidRect{
-      frame = layoutRect
+      layoutRect = manager.layoutRect
     }
     subItems.forEach{ $0.updateLayout() }
   }
@@ -286,8 +282,8 @@ extension Layoutable{
     if manager.translateRectIntoConstraints{
       return
     }
-    let size = intrinsicContentSize
-    manager.updateSize(size, node: self)
+    let size = itemIntrinsicContentSize
+    manager.updateSize(size)
   }
   
   private var ancestorItem: Layoutable{
@@ -306,8 +302,8 @@ extension Layoutable{
     if manager.layoutNeedsUpdate{
       updateContentSize()
     }else if manager.isRectConstrainted{
-      manager.updateSize(frame.size, node: self, priority: .required)
-      manager.updateOrigin(frame.origin, node: self)
+      manager.updateSize(layoutRect.size, priority: .required)
+      manager.updateOrigin(layoutRect.origin)
       
       /// a little weird here, when update size or origin,some constraints will be add to this item
       /// this item's translateRectIntoConstraints will be set to false
@@ -323,9 +319,9 @@ extension Layoutable{
   /// so we can know how manay lines this text should have
   private func layoutSecondPass(){
     if manager.sizeNeedsUpdate{
-      let size = contentSizeFor(maxWidth: layoutRect.width)
-      if size != .zero{
-        manager.updateSize(size, node: self)
+      let size = contentSizeFor(maxWidth: manager.layoutRect.size.width)
+      if size != SizeZero{
+        manager.updateSize(size)
       }
     }
     

@@ -34,28 +34,22 @@ import Cassowary
 
 final class LayoutProperty{
   
-  init(scale: Double) {
-    self.scale = scale
-  }
-  
   let x = Variable()
   let y = Variable()
   let width = Variable()
   let height = Variable()
   
   weak var solver: SimplexSolver?
-  
-  var scale: Double = 1
 
-  var frame: CGRect{
+  var frame: Rect{
     guard let solver = solver else{
-      return .zero
+      return RectZero
     }
-    let minX = solver.valueFor(x).pixelRound(to: scale)
-    let minY = solver.valueFor(y).pixelRound(to: scale)
-    let w = solver.valueFor(width).pixelRound(to: scale)
-    let h = solver.valueFor(height).pixelRound(to: scale)
-    return CGRect(x: minX, y: minY, width: w, height: h)
+    let minX = solver.valueFor(x)
+    let minY = solver.valueFor(y)
+    let w = solver.valueFor(width)
+    let h = solver.valueFor(height)
+    return Rect((minX, minY), (w,h))
   }
   
   func expressionFor(attribue: LayoutAttribute) -> Expression{

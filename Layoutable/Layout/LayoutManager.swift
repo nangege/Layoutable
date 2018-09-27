@@ -39,13 +39,19 @@ import Cassowary
 /// so that the class conform to LayoutItem does not need to provide those properties
 final public class LayoutManager{
   
+  public init(_ item: Layoutable){
+    self.item = item
+  }
+  
+  weak var item: Layoutable?
+  
   weak var solver: SimplexSolver?
   
-  var variable = LayoutProperty(scale: Double(UIScreen.main.scale))
+  var variable = LayoutProperty()
   
   // This property is used to adjust position after layout pass
   // It is useful for simplefy layout for irregular layout
-  public var offset = CGPoint.zero
+  public var offset = OffsetZero
   
   /// just like translateAutoSizingMaskIntoConstraints in autolayout
   /// if true, current frame of this item will be added to layout engine
@@ -67,12 +73,10 @@ final public class LayoutManager{
   private var newAddConstraints = Set<LayoutConstraint>()
   
   // frequency used Constraint,hold directly to improve performance
-  var width: LayoutConstraint?
-  var height: LayoutConstraint?
+  let sizeConstraints = SizeConstraints()
   
   /// used for frame translated constraint
-  var minX: LayoutConstraint?
-  var minY: LayoutConstraint?
+  let positionConstraints = PositionConstraints()
   
   
   /// whether this item should constrainted by rect translated constraints
@@ -87,8 +91,6 @@ final public class LayoutManager{
   var sizeNeedsUpdate: Bool{
     return layoutNeedsUpdate && !translateRectIntoConstraints
   }
-  
-  public init(){}
   
   func addConstraintsTo(_ solver: SimplexSolver){
     
@@ -121,9 +123,33 @@ final public class LayoutManager{
   }
   
   /// update content size Constraint
-  func updateSize(_ size: CGSize,node: Layoutable, priority: LayoutPriority = .strong){
+  func updateSize(_ size: Size, priority: LayoutPriority = .strong){
+    guard let item = item else { return }
+    sizeConstraints.updateSize(size, node: item, priority: priority)
+  }
+  
+  /// update content size Constraint
+  func updateOrigin(_ point: Point, priority: LayoutPriority = .required){
+    guard let item = item else { return }
+    positionConstraints.updateOrigin(point, node: item, priority: priority)
+  }
+  
+  /// final caculated rect for this item
+  var layoutRect: Rect{
+    let origin = variable.frame.origin
+    return ((origin.x + offset.x,origin.y + offset.y),variable.frame.size)
+  }
+}
+
+final class SizeConstraints{
+  // frequency used Constraint,hold directly to improve performance
+  var width: LayoutConstraint?
+  var height: LayoutConstraint?
+  
+  /// update content size Constraint
+  func updateSize(_ size: Size,node: Layoutable, priority: LayoutPriority = .strong){
     
-    if size.width != UIView.noIntrinsicMetric{
+    if size.width != InvalidIntrinsicMetric{
       if let width = width{
         width.constant = size.width
       }else{
@@ -131,7 +157,7 @@ final public class LayoutManager{
       }
     }
     
-    if size.height != UIView.noIntrinsicMetric{
+    if size.height != InvalidIntrinsicMetric{
       if let height = height{
         height.constant = size.height
       }else{
@@ -139,9 +165,16 @@ final public class LayoutManager{
       }
     }
   }
+}
+
+final class PositionConstraints{
+  
+  /// used for frame translated constraint
+  var minX: LayoutConstraint?
+  var minY: LayoutConstraint?
   
   /// update content size Constraint
-  func updateOrigin(_ point: CGPoint,node: Layoutable, priority: LayoutPriority = .required){
+  func updateOrigin(_ point: Point,node: Layoutable, priority: LayoutPriority = .required){
     
     if let minX = minX{
       minX.constant = point.x
@@ -154,10 +187,5 @@ final public class LayoutManager{
     }else{
       minY = node.top == point.y ~ priority
     }
-  }
-  
-  /// final caculated rect for this item
-  var layoutRect: CGRect{
-    return variable.frame.offsetBy(dx: offset.x,dy: offset.y)
   }
 }
