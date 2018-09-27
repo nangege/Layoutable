@@ -47,18 +47,23 @@ final public class LayoutManager{
   // It is useful for simplefy layout for irregular layout
   public var offset = CGPoint.zero
   
-  /// same as translateAutoSizingMaskIntoConstraints in autolayout
+  /// just like translateAutoSizingMaskIntoConstraints in autolayout
   /// if true, current frame of this item will be added to layout engine
   public var translateRectIntoConstraints = true
   
   public var enabled = true
   
+  /// to indicator whether contentSize of this item is changed
+  /// if true, contentSize constraints will be updated
   public var layoutNeedsUpdate = false
   
+  /// used to track all consytraints that self if the secondAnchor.item
   var pinedConstraints = Set<LayoutConstraint>()
   
+  /// constraints for this item that has been added to solver
   var constraints = Set<LayoutConstraint>()
   
+  /// constraints for this item that need to be added to solver
   private var newAddConstraints = Set<LayoutConstraint>()
   
   // frequency used Constraint,hold directly to improve performance
@@ -69,9 +74,23 @@ final public class LayoutManager{
   var minX: LayoutConstraint?
   var minY: LayoutConstraint?
   
+  
+  /// whether this item should constrainted by rect translated constraints
+  var isRectConstrainted: Bool{
+    return translateRectIntoConstraints && !pinedConstraints.isEmpty
+  }
+  
+  var isConstraintValidRect: Bool{
+    return solver != nil && !translateRectIntoConstraints
+  }
+  
+  var sizeNeedsUpdate: Bool{
+    return layoutNeedsUpdate && !translateRectIntoConstraints
+  }
+  
   public init(){}
   
-  func addConstraintTo(_ solver: SimplexSolver){
+  func addConstraintsTo(_ solver: SimplexSolver){
     
     // maybe need optiomize
     // find a better way to manager constraint cycle

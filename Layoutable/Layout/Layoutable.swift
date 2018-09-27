@@ -47,20 +47,21 @@ public protocol Layoutable: class{
   
   /// like layoutSubviews in UIView
   /// this method will be called after layout pass
-  /// frame of LayoutItem is determined
+  /// frame of this item is determined
   func layoutSubnode()
   
   /// override point.
   func updateConstraint()
   
   /// contentSize of node, unlike intrinsicContentSize, this time width of node is determined
-  /// this method is used to adjust height of node
-  /// like textNode, if numberOfLines is 0, we need maxWidth to determine number of lines and text height
+  /// this method is used to adjust height of this item
+  /// such as text item, if numberOfLines is 0, we need maxWidth to determine number of lines and text height
   /// - Parameter maxWidth: maxWidth of this node
   /// - Returns: size of content
   func contentSizeFor(maxWidth: CGFloat) -> CGSize
 }
 
+// public function
 extension Layoutable{
   
   /// the caculated frame of this layout item
@@ -82,17 +83,17 @@ extension Layoutable{
   
   /// just like layutIfNeeded in UIView
   /// call this method will caculate and update frame immediately
+  /// be careful, don't call this if layout hierarchy is not ready
   public func layoutIfEnabled(){
     
-    if !manager.enabled{
-      return
-    }
+    if !manager.enabled{ return }
     
     let item = ancestorItem
     
     if item.manager.solver == nil{
       let solver = LayoutEngine.solveFor(item)
-      item.addConstraintTo(solver)
+      solver.autoSolve = false
+      item.addConstraintsTo(solver)
       try? solver.solve()
       solver.autoSolve = true
     }
@@ -105,7 +106,7 @@ extension Layoutable{
   /// provide for case of layout cache
   public var layoutValues: LayoutValues{
     var cache = LayoutValues()
-    if manager.enabled && !manager.translateRectIntoConstraints{
+    if manager.isConstraintValidRect{
       cache.frame = layoutRect
     }else{
       cache.frame = frame
@@ -119,7 +120,6 @@ extension Layoutable{
   /// - Parameter layout: layout hierarchy from this root node
   /// - make sure node hierarchy is exactly the same when you get this layoutValues
   public func apply(_ layout: LayoutValues){
-
     frame = layout.frame
     for (index, node) in subItems.enumerated(){
       node.apply(layout.subLayout[index])
@@ -271,15 +271,15 @@ extension Layoutable{
   
   private func updateLayout(){
     // need to be optimized
-    if manager.solver != nil && !manager.translateRectIntoConstraints{
+    if manager.isConstraintValidRect{
       frame = layoutRect
     }
     subItems.forEach{ $0.updateLayout() }
   }
   
-  private func addConstraintTo(_ solver: SimplexSolver){
-    manager.addConstraintTo(solver)
-    subItems.forEach { $0.addConstraintTo(solver) }
+  private func addConstraintsTo(_ solver: SimplexSolver){
+    manager.addConstraintsTo(solver)
+    subItems.forEach { $0.addConstraintsTo(solver) }
   }
   
   private func updateContentSize(){
@@ -305,7 +305,7 @@ extension Layoutable{
   private func layoutFirstPass(){
     if manager.layoutNeedsUpdate{
       updateContentSize()
-    }else if manager.translateRectIntoConstraints && !manager.pinedConstraints.isEmpty{
+    }else if manager.isRectConstrainted{
       manager.updateSize(frame.size, node: self, priority: .required)
       manager.updateOrigin(frame.origin, node: self)
       
@@ -322,7 +322,7 @@ extension Layoutable{
   /// such as TextNode,at this time ,width for textNode is determined
   /// so we can know how manay lines this text should have
   private func layoutSecondPass(){
-    if manager.layoutNeedsUpdate && !manager.translateRectIntoConstraints{
+    if manager.sizeNeedsUpdate{
       let size = contentSizeFor(maxWidth: layoutRect.width)
       if size != .zero{
         manager.updateSize(size, node: self)

@@ -36,7 +36,6 @@ import Cassowary
 final class LayoutEngine{
   
   static let solverPool = NSMapTable<AnyObject,SimplexSolver>.weakToStrongObjects()
-  
   static func solveFor(_ node: Layoutable) -> SimplexSolver{
     if let solver = solverPool.object(forKey: node){
       return solver

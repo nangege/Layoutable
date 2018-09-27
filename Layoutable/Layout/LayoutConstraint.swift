@@ -148,8 +148,10 @@ open class LayoutConstraint{
       if oldValue != isActive{
         if isActive{
           firstAnchor.item.addConstraint(self)
+          secondAnchor?.item.manager.pinedConstraints.insert(self)
         }else{
           firstAnchor.item.removeConstraint(self)
+          secondAnchor?.item.manager.pinedConstraints.remove(self)
         }
       }
     }
