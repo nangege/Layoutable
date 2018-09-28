@@ -1,63 +1,110 @@
 ## Layoutable 
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![](https://img.shields.io/badge/iOS-8.0%2B-lightgrey.svg)]()
+[![Swift 4.0](https://img.shields.io/badge/Swift-4.2-orange.svg)]()
 
-Layoutable is a swift reimplement of apple's Autolayout. It uses the same [Cassowary ](https://constraints.cs.washington.edu/cassowary/) algorithm as it's core and provides a set of api similar to Autolayout. The difference is Layouable is more flexable and easy to use.Layoutable don't rely on UIView, it can be used in any object that conform to Layoutable protocol and can be used in background thread which is the core benefit of Layoutable. Layoutable also provides high level api and syntax sugar to make it easy to use.
+Layoutable is a swift reimplement of apple's Autolayout. It uses the same [Cassowary ](https://constraints.cs.washington.edu/cassowary/) algorithm as it's core and provides a set of api similar to Autolayout. The difference is that Layouable is more flexable and easy to use.Layoutable don't rely on UIView, it can be used in any object that conform to Layoutable protocol such as CALaye or self defined object.It can be used in background thread which is the core benefit of Layoutable. Layoutable also provides high level api and syntax sugar to make it easy to use.
 
-## Requirements
+### Requirements
 - iOS 8.0+
 - Swift 4.2 
+- Xcode 10.0 or higher
 
-## Installation
+### Installation
 
-[Layoutable](https://github.com/nangege/Layoutable) rely on   [Cassowary](https://github.com/nangege/Cassowary) library,you need to and both of the to your projetc.
+[Layoutable](https://github.com/nangege/Layoutable) rely on [Cassowary](https://github.com/nangege/Cassowary), you need to add both of them to your projetc.
 
-- [Carthage](https://github.com/Carthage/Carthage) : github "https://github.com/nangege/Layoutable"
-
-- Manually: drag Layoutable and [Cassowary](https://github.com/nangege/Cassowary) project file to your workspace 
-
-Then add Layoutable and Cassowary framework to Linked Frameworks and Libraries
-
-import Layoutable
+####Carthage
 
 
-## Usage
+[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager for Cocoa application. To install the carthage tool, you can use [Homebrew](http://brew.sh).
+
+```bash
+$ brew update
+$ brew install carthage
+```
+
+To integrate Panda into your Xcode project using Carthage, specify it in your `Cartfile`:
+
+```bash
+github "https://github.com/nangege/Layoutable" "master"
+```
+
+Then, run the following command to build the Panda framework:
+
+```bash
+$ carthage update
+```
+
+At last, you need to set up your Xcode project manually to add the Panda,Layoutable and Cassowary framework.
+
+On your application targets’ “General” settings tab, in the “Linked Frameworks and Libraries” section, drag and drop each framework you want to use from the Carthage/Build folder on disk.
+
+On your application targets’ “Build Phases” settings tab, click the “+” icon and choose “New Run Script Phase”. Create a Run Script with the following content:
+
+```bash
+/usr/local/bin/carthage copy-frameworks
+```
+
+and add the paths to the frameworks you want to use under “Input Files”:
+
+```bash
+$(SRCROOT)/Carthage/Build/iOS/Layoutable.framework
+$(SRCROOT)/Carthage/Build/iOS/Cassowary.framework
+```
+
+For more information about how to use Carthage, please see its [project page](https://github.com/Carthage/Carthage).
+
+###Manually:    
+               
+    `git clone git@github.com:nangege/Layoutable.git` ,
+    `git clone git@github.com:nangege/Cassowary.git`
+            
+            
+  then drag `Layoutable.xcodeproj` and `Cassowary.xcodeproj` file to your projrct 
+
+On your application targets’ “General” settings tab, in the “Linked Frameworks and Libraries” section,add `Layoutable.framework` and `Cassowary.framework`.
+
+
+### Usage
 
 1. Define your own Layout Object
+ 
     ```swift
-     import Layoutable
+    import Layoutable
 	
     class TestNode: Layoutable{
-	  
-	    public init() {}
-	  
-	    var size = CGSize.zero
-	  
-	    func addSubnode(_ node: TestNode){
-	      subItems.append(node)
-	      node.superItem = self
+
+      public init() {}
+  
+      lazy var manager  = LayoutManager(self)
+  
+      var layoutSize = InvaidIntrinsicSize
+
+      weak var superItem: Layoutable? = nil
+  
+      var subItems = [Layoutable]()
+  
+      func addSubnode(_ node: TestNode){
+        subItems.append(node)
+        node.superItem = self
       }
-	  
-	  
-	    // needed by Layoutable protocol
-	    var manager: LayoutManager = LayoutManager()
-	  
-	    var intrinsicContentSize: CGSize {
-	      return size
-	    }
-	  
-	    weak var superItem: Layoutable? = nil
-	  
-	    var subItems = [Layoutable]()
-	  
-	    var frame: CGRect = .zero
-	
-	    func layoutSubnode() {}
-	  
-	    func updateConstraint() {}
-	  
-	    func contentSizeFor(maxWidth: CGFloat) -> CGSize {
-	      return .zero
-       }
-     }
+  
+      func layoutSubItems() {}
+  
+      func updateConstraint() {}
+  
+      var layoutRect: Rect = RectZero
+  
+      var itemIntrinsicContentSize: Size{
+        return layoutSize
+      }
+  
+      func contentSizeFor(maxWidth: Double) -> Size {
+        return InvaidIntrinsicSize
+      }
+  
+    }
 
     ```
 
@@ -90,9 +137,9 @@ import Layoutable
     
     ```
     
-## Operation
+### Operation
 
-1. Basic attributes
+1. basic attributes
   
     Like Autolayout, Layoutable support both Equal, lessThanOrEqual and greatThanOrEqualTo
 
@@ -109,7 +156,7 @@ import Layoutable
      node1.bottom <= node2.bottom // can bve write as node1.bottom <= node2
     
     ```
-2. Composit attribute
+2. composit attribute
 
    beside basic attribute such as  left,right, Layoutable also provide some Composit attribute like size ,xSide,ySide,edge
    
@@ -133,13 +180,13 @@ import Layoutable
     
    ```
  
-3. Set Priority
+3. update Priority
 
      ```swift 
      node1.width == 100 ~.strong 
      node1.height == 200 ~ 760.0
       ``` 
-4. Update constant
+4. update constant
 
     ```swift
     let c =  node.left == node2.left + 10
@@ -147,7 +194,7 @@ import Layoutable
     
     ```   
  
-## Supported attributes
+### Supported attributes
 
 
 Layoutable                   |  NSLayoutAttribute
@@ -171,9 +218,10 @@ Layoutable.bottomLeft        |  bottom and left
 Layoutable.bottomRight       |  bottom and right
 
 
-## Todo
-- complete unit test
-- more convenice API
-- playground example
+### Lisence
+
+The MIT License (MIT)
+
+
 
 
