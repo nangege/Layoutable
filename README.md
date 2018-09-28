@@ -1,7 +1,8 @@
-## Layoutable 
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![](https://img.shields.io/badge/iOS-8.0%2B-lightgrey.svg)]()
 [![Swift 4.0](https://img.shields.io/badge/Swift-4.2-orange.svg)]()
+
+## Layoutable 
 
 Layoutable is a swift reimplement of apple's Autolayout. It uses the same [Cassowary ](https://constraints.cs.washington.edu/cassowary/) algorithm as it's core and provides a set of api similar to Autolayout. The difference is that Layouable is more flexable and easy to use.Layoutable don't rely on UIView, it can be used in any object that conform to Layoutable protocol such as CALaye or self defined object.It can be used in background thread which is the core benefit of Layoutable. Layoutable also provides high level api and syntax sugar to make it easy to use.
 
@@ -14,7 +15,7 @@ Layoutable is a swift reimplement of apple's Autolayout. It uses the same [Casso
 
 [Layoutable](https://github.com/nangege/Layoutable) rely on [Cassowary](https://github.com/nangege/Cassowary), you need to add both of them to your projetc.
 
-####Carthage
+### Carthage
 
 
 [Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager for Cocoa application. To install the carthage tool, you can use [Homebrew](http://brew.sh).
@@ -55,7 +56,7 @@ $(SRCROOT)/Carthage/Build/iOS/Cassowary.framework
 
 For more information about how to use Carthage, please see its [project page](https://github.com/Carthage/Carthage).
 
-###Manually:    
+### Manually
                
     `git clone git@github.com:nangege/Layoutable.git` ,
     `git clone git@github.com:nangege/Cassowary.git`
@@ -68,7 +69,7 @@ On your application targets’ “General” settings tab, in the “Linked Fram
 
 ### Usage
 
-1. Define your own Layout Object
+1. define your own Layout Object
  
     ```swift
     import Layoutable
@@ -108,7 +109,7 @@ On your application targets’ “General” settings tab, in the “Linked Fram
 
     ```
 
-2. Use Layout object to Layout
+2. use Layout object to Layout
     
     ```swift
     import Layoutable   
