@@ -32,7 +32,7 @@
 
 import Cassowary
 
-public protocol AnchorType{
+public protocol AnchorType: class,CustomDebugStringConvertible{
   
   var item: Layoutable!{ get set}
   
@@ -120,7 +120,7 @@ extension AnchorType{
 }
 
 public class Anchor: AnchorType{
-  
+
   public weak var item: Layoutable!
     
   public let attribute: LayoutAttribute
@@ -128,6 +128,11 @@ public class Anchor: AnchorType{
   public init(item: Layoutable, attribute: LayoutAttribute){
     self.item = item
     self.attribute = attribute
+  }
+  
+  public var debugDescription: String{
+    let identifier = ObjectIdentifier(item).pure
+    return "\(String(describing: item!))(\(identifier)).\(attribute)"
   }
 }
 
@@ -216,3 +221,8 @@ final public class LayoutExpression<AnchorType: Anchor>{
   return lhs.lessThanOrEqualTo( rhs.anchor, multiplier: rhs.multiplier, constant: rhs.value)
 }
 
+extension ObjectIdentifier{
+  var pure: String{
+    return String(debugDescription.split(separator: "(")[1].split(separator: ")")[0])
+  }
+}

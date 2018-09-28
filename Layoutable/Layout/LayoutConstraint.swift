@@ -205,11 +205,17 @@ extension LayoutConstraint{
                  (2) find the code that added the unwanted constraint or constraints and fix it.
                  """
       print(tips)
-      constraint.forEach{ print("   \(String(describing: $0.owner)) " ) }
       
+      for (index,constraint) in constraint.enumerated(){
+        if let owner = constraint.owner{
+          print("    \(index + 1). \(String(describing: owner)) " )
+        }
+      }
+
       print("""
             Will attempt to recover by breaking constraint
                 \(self)
+            \n
             """)
     }catch{
       print(error)
@@ -253,10 +259,10 @@ infix operator ~:TernaryPrecedence
 
 extension LayoutConstraint: CustomStringConvertible{
   public var description: String {
-    let lhsdesc = "\(firstAnchor.item!).\(firstAnchor.attribute)"
+    let lhsdesc = firstAnchor.debugDescription
     var desc = lhsdesc
     if let rhsAnchor = self.secondAnchor{
-      let rhsdesc = "\(rhsAnchor.item!).\(rhsAnchor.attribute)"
+      let rhsdesc = rhsAnchor.debugDescription
       desc = "\(lhsdesc) \(relation) \(rhsdesc)*\(multiplier) + \(constant)"
     }else{
       desc = "\(lhsdesc) \(relation) \(constant)"

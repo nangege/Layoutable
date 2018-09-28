@@ -38,13 +38,12 @@ class LayoutableTests: XCTestCase {
       [node2,node].equal(.top,.bottom,.centerY,.right)
       
       [node1,node2].space(10, axis: .horizontal)
-      let c =  node.left == node2.left + 10
-      c.constant = 100
+
       node.layoutIfEnabled()
       
-      print(node.frame)
-      print(node1.frame)
-      print(node2.frame)
+      print(node.layoutRect)
+      print(node1.layoutRect)
+      print(node2.layoutRect)
     }
 
     func testNestPerformance() {
@@ -95,8 +94,8 @@ class LayoutableTests: XCTestCase {
         newNode.top >= 20
         newNode.bottom <= node.bottom - 20
         
-        newNode.left == leftNode.left + CGFloat(arc4random()%20)
-        node.top == rightNode.top + CGFloat(arc4random()%20)
+        newNode.left == leftNode.left + Double(arc4random()%20)
+        node.top == rightNode.top + Double(arc4random()%20)
 
         nodes.append(newNode)
       }

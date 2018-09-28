@@ -10,22 +10,16 @@ import Foundation
 @testable import Layoutable
 
 class TestNode: Layoutable{
-  
+
   public init() {}
   
-  var manager: LayoutManager = LayoutManager()
+  lazy var manager  = LayoutManager(self)
   
-  var size = CGSize.zero
-  
-  var intrinsicContentSize: CGSize {
-    return size
-  }
-  
+  var layoutSize = InvaidIntrinsicSize
+
   weak var superItem: Layoutable? = nil
   
   var subItems = [Layoutable]()
-  
-  var frame: CGRect = .zero
   
   func addSubnode(_ node: TestNode){
     subItems.append(node)
@@ -36,9 +30,14 @@ class TestNode: Layoutable{
   
   func updateConstraint() {}
   
-  func contentSizeFor(maxWidth: CGFloat) -> CGSize {
-    return .zero
+  var layoutRect: Rect = RectZero
+  
+  var itemIntrinsicContentSize: Size{
+    return layoutSize
   }
   
+  func contentSizeFor(maxWidth: Double) -> Size {
+    return InvaidIntrinsicSize
+  }
   
 }
