@@ -36,8 +36,8 @@ final class LayoutProperty{
   
   let x = Variable()
   let y = Variable()
-  let width = Variable()
-  let height = Variable()
+  let width = Variable.restricted()
+  let height = Variable.restricted()
   
   weak var solver: SimplexSolver?
 
