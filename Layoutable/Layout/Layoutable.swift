@@ -121,6 +121,28 @@ extension Layoutable{
       node.apply(layout.subLayout[index])
     }
   }
+  
+  
+  /// used when remove item
+  ///
+  //  call this function to remove all constraints for this item and it's subitems from current solver
+  /// and break all constrait with item's supernode
+  /// - Parameter item: item from which to break
+  public func recursivelyReset(from item: Layoutable){
+    manager.solver = nil
+    allConstraints.forEach{ $0.remove()}
+    while let c = manager.constraints.popFirst() {
+      if let secondItem = c.secondAnchor?.item{
+        if secondItem.ancestorItem === item{
+          addConstraint(c)
+        }
+      }
+    }
+    
+    manager.pinedConstraints = manager.pinedConstraints.filter{ $0.firstAnchor.item.ancestorItem !== item }
+    
+    subItems.forEach{ $0.recursivelyReset(from: item)}
+  }
 }
 
 // MARK: - public property

@@ -11,63 +11,63 @@ import XCTest
 
 class LayoutableTests: XCTestCase {
 
-    override func setUp() {
-      let test = TestNode()
-      test.size == (320,640)
-      test.layoutIfEnabled()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
+  override func setUp() {
+    let test = TestNode()
+    test.size == (320,640)
+    test.layoutIfEnabled()
+      // Put setup code here. This method is called before the invocation of each test method in the class.
+  }
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
+  override func tearDown() {
+    // Put teardown code here. This method is called after the invocation of each test method in the class.
+  }
 
-    func testExample() {
+  func testExample() {
+    let node = TestNode()
+    let node1 = TestNode()
+    let node2 = TestNode()
+      
+    node.addSubnode(node1)
+    node.addSubnode(node2)
+      
+    node1.size == (30,30)
+    node2.size == (40,40)
+      
+    [node,node1].equal(.centerY,.left)
+      
+    [node2,node].equal(.top,.bottom,.centerY,.right)
+      
+    [node1,node2].space(10, axis: .horizontal)
+
+    node.layoutIfEnabled()
+      
+    print(node.layoutRect)
+    print(node1.layoutRect)
+    print(node2.layoutRect)
+  }
+
+  func testNestPerformance() {
+    let testNumber = 100
+    self.measure {
       let node = TestNode()
-      let node1 = TestNode()
-      let node2 = TestNode()
-      
-      node.addSubnode(node1)
-      node.addSubnode(node2)
-      
-      node1.size == (30,30)
-      node2.size == (40,40)
-      
-      [node,node1].equal(.centerY,.left)
-      
-      [node2,node].equal(.top,.bottom,.centerY,.right)
-      
-      [node1,node2].space(10, axis: .horizontal)
-
-      node.layoutIfEnabled()
-      
-      print(node.layoutRect)
-      print(node1.layoutRect)
-      print(node2.layoutRect)
-    }
-
-    func testNestPerformance() {
-        let testNumber = 100
-        self.measure {
-          let node = TestNode()
-          var nodes = [TestNode]()
-          node.size == (320.0,640.0)
-          for index in 0..<testNumber{
+      var nodes = [TestNode]()
+      node.size == (320.0,640.0)
+      for index in 0..<testNumber{
             
-            let newNode = TestNode()
-            if nodes.count == 0{
-              node.addSubnode(newNode)
-              newNode.edge == node + (0.5,0.5,0.5,0.5)
-            }else{
-              let aNode = nodes[index - 1]
-              aNode.addSubnode(newNode)
-              newNode.edge == aNode + (1,1,1,1)
-            }
-            nodes.append(newNode)
-          }
-          node.layoutIfEnabled()
+        let newNode = TestNode()
+        if nodes.count == 0{
+          node.addSubnode(newNode)
+          newNode.edge == node + (0.5,0.5,0.5,0.5)
+        }else{
+          let aNode = nodes[index - 1]
+          aNode.addSubnode(newNode)
+          newNode.edge == aNode + (1,1,1,1)
         }
+        nodes.append(newNode)
+      }
+      node.layoutIfEnabled()
     }
+  }
   
   func testAutolayoutPerformance() {
     let testNumber = 100
