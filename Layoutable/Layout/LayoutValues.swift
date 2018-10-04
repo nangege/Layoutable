@@ -33,18 +33,18 @@
 
 // use tuple as data struct to make it easy to write
 // like node.size = (30,30) compare to UIKit node.size = CGSize(width: height: 30)
-public typealias ValueType = Double
-public typealias Size = (width: Double, height: Double)
-public typealias Point = (x: Double, y: Double)
-public typealias Offset = (x: Double, y: Double)
-public typealias Insets = (top: Double,left: Double, bottom: Double,right: Double)
-public typealias XSideInsets = (left: Double, right: Double)
-public typealias YSideInsets = (top: Double, bottom: Double)
-public typealias EdgeInsets = (top: Double, left: Double, bottom: Double, right: Double)
+public typealias Value = Double
+public typealias Size = (width: Value, height: Value)
+public typealias Point = (x: Value, y: Value)
+public typealias Offset = (x: Value, y: Value)
+public typealias Insets = (top: Value,left: Value, bottom: Value,right: Value)
+public typealias XSideInsets = (left: Value, right: Value)
+public typealias YSideInsets = (top: Value, bottom: Value)
+public typealias EdgeInsets = (top: Value, left: Value, bottom: Value, right: Value)
 
 public typealias Rect = (origin: Point, size: Size)
 
-public let InvalidIntrinsicMetric = Double.greatestFiniteMagnitude
+public let InvalidIntrinsicMetric = Value.infinity
 
 public let InvaidIntrinsicSize = (InvalidIntrinsicMetric,InvalidIntrinsicMetric)
 

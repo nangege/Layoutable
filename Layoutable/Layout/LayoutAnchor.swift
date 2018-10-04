@@ -77,20 +77,20 @@ extension AnchorType{
 
 extension AnchorType{
   
-  @discardableResult public func constraint(to anchor: Self? = nil,relation: LayoutRelation, constant: Double = 0) -> LayoutConstraint{
+  @discardableResult public func constraint(to anchor: Self? = nil,relation: LayoutRelation, constant: Value = 0) -> LayoutConstraint{
     return LayoutConstraint(firstAnchor: self , secondAnchor: anchor, relation: relation, constant:constant)
   }
   
   // These methods return a constraint of the form thisAnchor = otherAnchor + constant.
-  @discardableResult public func equalTo(_ anchor: Self? = nil, constant: Double = 0) -> LayoutConstraint{
+  @discardableResult public func equalTo(_ anchor: Self? = nil, constant: Value = 0) -> LayoutConstraint{
     return constraint(to: anchor, relation: .equal, constant: constant)
   }
   
-  @discardableResult public func greaterThanOrEqualTo(_ anchor: Self? = nil, constant: Double = 0) -> LayoutConstraint{
+  @discardableResult public func greaterThanOrEqualTo(_ anchor: Self? = nil, constant: Value = 0) -> LayoutConstraint{
     return constraint(to: anchor, relation: .greatThanOrEqual, constant: constant)
   }
   
-  @discardableResult public func lessThanOrEqualTo(_ anchor: Self? = nil, constant: Double = 0) -> LayoutConstraint{
+  @discardableResult public func lessThanOrEqualTo(_ anchor: Self? = nil, constant: Value = 0) -> LayoutConstraint{
     return constraint(to: anchor, relation: .lessThanOrEqual, constant: constant)
   }
   
@@ -106,15 +106,15 @@ extension AnchorType{
     return lhs.greaterThanOrEqualTo(rhs)
   }
   
-  @discardableResult static public func == (lhs: Self, rhs: Double) -> LayoutConstraint{
+  @discardableResult static public func == (lhs: Self, rhs: Value) -> LayoutConstraint{
     return lhs.equalTo(constant: rhs)
   }
   
-  @discardableResult static public func <= (lhs: Self, rhs: Double) -> LayoutConstraint{
+  @discardableResult static public func <= (lhs: Self, rhs: Value) -> LayoutConstraint{
     return lhs.lessThanOrEqualTo(constant: rhs)
   }
   
-  @discardableResult static public func >= (lhs: Self,rhs: Double) -> LayoutConstraint{
+  @discardableResult static public func >= (lhs: Self,rhs: Value) -> LayoutConstraint{
     return lhs.greaterThanOrEqualTo(constant: rhs)
   }
 }
@@ -146,36 +146,36 @@ final public class DimensionAnchor : Anchor {
 
   ///  These methods return a constraint of the form
   ///  thisAnchor = otherAnchor * multiplier + constant.
-  @discardableResult final public func equalTo(_ anchor: DimensionAnchor? = nil, multiplier m: Double = 1, constant: Double = 0) -> LayoutConstraint{
+  @discardableResult final public func equalTo(_ anchor: DimensionAnchor? = nil, multiplier m: Value = 1, constant: Value = 0) -> LayoutConstraint{
     return LayoutConstraint(firstAnchor: self, secondAnchor: anchor, relation: .equal, multiplier: m, constant: constant)
   }
 
-  @discardableResult final public func greaterThanOrEqualTo(_ anchor: DimensionAnchor? = nil, multiplier m: Double = 1, constant: Double = 0 ) -> LayoutConstraint{
+  @discardableResult final public func greaterThanOrEqualTo(_ anchor: DimensionAnchor? = nil, multiplier m: Value = 1, constant: Value = 0 ) -> LayoutConstraint{
     return LayoutConstraint(firstAnchor:self, secondAnchor: anchor, relation:.greatThanOrEqual ,multiplier:m, constant:constant )
   }
 
-  @discardableResult final public func lessThanOrEqualTo(_ anchor: DimensionAnchor? = nil, multiplier m: Double = 1, constant: Double = 0) -> LayoutConstraint{
+  @discardableResult final public func lessThanOrEqualTo(_ anchor: DimensionAnchor? = nil, multiplier m: Value = 1, constant: Value = 0) -> LayoutConstraint{
       return LayoutConstraint(firstAnchor:self, secondAnchor: anchor,relation:.lessThanOrEqual ,multiplier:m, constant:constant )
   }
 }
 
 final public class LayoutExpression<AnchorType: Anchor>{
   var anchor: AnchorType
-  var value: Double
-  var multiplier: Double = 1
+  var value: Value
+  var multiplier: Value = 1
   
-  init(anchor: AnchorType, multiplier: Double = 1, offset: Double = 0) {
+  init(anchor: AnchorType, multiplier: Value = 1, offset: Value = 0) {
     self.anchor = anchor
     self.multiplier = multiplier
     self.value = offset
   }
 }
 
-@discardableResult public func + <AnchorType: Anchor>(lhs: AnchorType, rhs: Double) -> LayoutExpression<AnchorType>{
+@discardableResult public func + <AnchorType: Anchor>(lhs: AnchorType, rhs: Value) -> LayoutExpression<AnchorType>{
   return LayoutExpression(anchor: lhs, offset: rhs)
 }
 
-@discardableResult public func - <AnchorType: Anchor>(lhs: AnchorType, rhs: Double) -> LayoutExpression<AnchorType>{
+@discardableResult public func - <AnchorType: Anchor>(lhs: AnchorType, rhs: Value) -> LayoutExpression<AnchorType>{
   return lhs + (-rhs)
 }
 
@@ -192,20 +192,20 @@ final public class LayoutExpression<AnchorType: Anchor>{
 }
 
 /// LayoutDimession
-@discardableResult public func + <AnchorType: Anchor>(lhs: LayoutExpression<AnchorType>, rhs: Double) -> LayoutExpression<AnchorType>{
+@discardableResult public func + <AnchorType: Anchor>(lhs: LayoutExpression<AnchorType>, rhs: Value) -> LayoutExpression<AnchorType>{
   lhs.value += rhs
   return lhs
 }
 
-@discardableResult public func - (lhs: LayoutExpression<DimensionAnchor>, rhs: Double) -> LayoutExpression<DimensionAnchor>{
+@discardableResult public func - (lhs: LayoutExpression<DimensionAnchor>, rhs: Value) -> LayoutExpression<DimensionAnchor>{
   return lhs + (-rhs)
 }
 
-@discardableResult public func * (lhs: DimensionAnchor, rhs: Double) -> LayoutExpression<DimensionAnchor>{
+@discardableResult public func * (lhs: DimensionAnchor, rhs: Value) -> LayoutExpression<DimensionAnchor>{
   return LayoutExpression(anchor: lhs, multiplier: rhs)
 }
 
-@discardableResult public func / (lhs: DimensionAnchor, rhs: Double) -> LayoutExpression<DimensionAnchor>{
+@discardableResult public func / (lhs: DimensionAnchor, rhs: Value) -> LayoutExpression<DimensionAnchor>{
   return lhs * (1/rhs)
 }
 

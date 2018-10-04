@@ -106,7 +106,7 @@ extension LayoutAttribute: CustomDebugStringConvertible{
 
 open class LayoutConstraint{
   
-  public init(firstAnchor: AnchorType,secondAnchor: AnchorType? = nil, relation: LayoutRelation = .equal, multiplier: Double = 1,constant: Double = 0){
+  public init(firstAnchor: AnchorType,secondAnchor: AnchorType? = nil, relation: LayoutRelation = .equal, multiplier: Value = 1,constant: Value = 0){
     self.firstAnchor = firstAnchor
     self.secondAnchor = secondAnchor
     self.relation = relation
@@ -125,12 +125,12 @@ open class LayoutConstraint{
   
   public let relation: LayoutRelation
   
-  public let multiplier: Double
+  public let multiplier: Value
   
-  open var constant: Double = 0{
+  open var constant: Value = 0{
     didSet{
       if let solver = solver , constant != oldValue{
-        solver.updateConstant(for: constraint, to: Double(constant))
+        solver.updateConstant(for: constraint, to: Value(constant))
       }
     }
   }

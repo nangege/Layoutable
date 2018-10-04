@@ -59,7 +59,7 @@ public protocol Layoutable: class{
   /// such as text item, if numberOfLines is 0, we need maxWidth to determine number of lines and text height
   /// - Parameter maxWidth: maxWidth of this node
   /// - Returns: size of content
-  func contentSizeFor(maxWidth: Double) -> Size
+  func contentSizeFor(maxWidth: Value) -> Size
 }
 
 // public function
