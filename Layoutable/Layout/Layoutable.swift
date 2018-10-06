@@ -342,7 +342,7 @@ extension Layoutable{
   private func layoutSecondPass(){
     if manager.sizeNeedsUpdate{
       let size = contentSizeFor(maxWidth: manager.layoutRect.size.width)
-      if size != SizeZero{
+      if size != InvaidIntrinsicSize{
         manager.updateSize(size)
       }
     }
