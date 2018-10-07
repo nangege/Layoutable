@@ -41,15 +41,15 @@ final class LayoutProperty{
   
   weak var solver: SimplexSolver?
 
-  var frame: Rect{
+  var frame: CGRect{
     guard let solver = solver else{
-      return RectZero
+      return .zero
     }
     let minX = solver.valueFor(x)
     let minY = solver.valueFor(y)
     let w = solver.valueFor(width)
     let h = solver.valueFor(height)
-    return Rect((minX, minY), (w,h))
+    return CGRect(x: minX, y: minY,width: w,height: h)
   }
   
   func expressionFor(attribue: LayoutAttribute) -> Expression{

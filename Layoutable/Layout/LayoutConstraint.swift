@@ -130,7 +130,7 @@ open class LayoutConstraint{
   open var constant: Value = 0{
     didSet{
       if let solver = solver , constant != oldValue{
-        solver.updateConstant(for: constraint, to: Value(constant))
+        solver.updateConstant(for: constraint, to: Double(constant))
       }
     }
   }
@@ -166,10 +166,10 @@ open class LayoutConstraint{
     let superItem = firstAnchor.item.commonSuperItem(with: secondAnchor?.item)
     
     var lhsExpr = firstAnchor.expression(in: superItem)
-    let rhsExpr = Expression(constant: constant)
+    let rhsExpr = Expression(constant: Double(constant))
     
     if let secondAnchor = secondAnchor{
-      rhsExpr += secondAnchor.expression(in: superItem)*multiplier
+      rhsExpr += secondAnchor.expression(in: superItem)*Double(multiplier)
     }else{
       lhsExpr = firstAnchor.expression()
     }

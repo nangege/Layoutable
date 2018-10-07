@@ -41,7 +41,7 @@ public protocol Layoutable: class{
   
   var superItem: Layoutable? { get }
   var subItems: [Layoutable]{ get }
-  var layoutRect: Rect { get set}
+  var layoutRect: CGRect { get set}
   
   /// like layoutSubviews in UIView
   /// this method will be called after layout pass
@@ -52,14 +52,14 @@ public protocol Layoutable: class{
   func updateConstraint()
   
   /// contentSize of node like,just like intrinsicContentSize in UIKit
-  var itemIntrinsicContentSize: Size { get }
+  var itemIntrinsicContentSize: CGSize { get }
   
   /// contentSize of node, unlike intrinsicContentSize, this time width of node is determined
   /// this method is used to adjust height of this item
   /// such as text item, if numberOfLines is 0, we need maxWidth to determine number of lines and text height
   /// - Parameter maxWidth: maxWidth of this node
   /// - Returns: size of content
-  func contentSizeFor(maxWidth: Value) -> Size
+  func contentSizeFor(maxWidth: Value) -> CGSize
 }
 
 // public function

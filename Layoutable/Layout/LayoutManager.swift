@@ -123,21 +123,20 @@ final public class LayoutManager{
   }
   
   /// update content size Constraint
-  func updateSize(_ size: Size, priority: LayoutPriority = .strong){
+  func updateSize(_ size: CGSize, priority: LayoutPriority = .strong){
     guard let item = item else { return }
     sizeConstraints.updateSize(size, node: item, priority: priority)
   }
   
   /// update content size Constraint
-  func updateOrigin(_ point: Point, priority: LayoutPriority = .required){
+  func updateOrigin(_ point: CGPoint, priority: LayoutPriority = .required){
     guard let item = item else { return }
     positionConstraints.updateOrigin(point, node: item, priority: priority)
   }
   
   /// final caculated rect for this item
-  var layoutRect: Rect{
-    let origin = variable.frame.origin
-    return ((origin.x + offset.x,origin.y + offset.y),variable.frame.size)
+  var layoutRect: CGRect{
+    return variable.frame
   }
 }
 
@@ -147,7 +146,7 @@ final class SizeConstraints{
   var height: LayoutConstraint?
   
   /// update content size Constraint
-  func updateSize(_ size: Size,node: Layoutable, priority: LayoutPriority = .strong){
+  func updateSize(_ size: CGSize,node: Layoutable, priority: LayoutPriority = .strong){
     
     if size.width != InvalidIntrinsicMetric{
       if let width = width{
@@ -174,7 +173,7 @@ final class PositionConstraints{
   var minY: LayoutConstraint?
   
   /// update content size Constraint
-  func updateOrigin(_ point: Point,node: Layoutable, priority: LayoutPriority = .required){
+  func updateOrigin(_ point: CGPoint,node: Layoutable, priority: LayoutPriority = .required){
     
     if let minX = minX{
       minX.constant = point.x

@@ -121,7 +121,7 @@ final public class XSideAnchor: CompositAnchor{
     return equalTo(anchor.item, insets: insets)
   }
   
-  @discardableResult public func equalTo(_ layoutItem: Layoutable, insets: Double) -> [LayoutConstraint]{
+  @discardableResult public func equalTo(_ layoutItem: Layoutable, insets: Value) -> [LayoutConstraint]{
     return equalTo(layoutItem, insets: (insets, insets))
   }
   
@@ -129,7 +129,7 @@ final public class XSideAnchor: CompositAnchor{
     return self + inset
   }
   
-  public func insets(_ inset: Double) -> CompositExpression<XSideAnchor, Double>{
+  public func insets(_ inset: Value) -> CompositExpression<XSideAnchor, Value>{
     return self + inset
   }
   
@@ -151,7 +151,7 @@ final public class YSideAnchor: CompositAnchor{
     return equalTo(anchor.item, insets: insets)
   }
   
-  @discardableResult public func equalTo(_ layoutItem: Layoutable, insets: Double) -> [LayoutConstraint]{
+  @discardableResult public func equalTo(_ layoutItem: Layoutable, insets: Value) -> [LayoutConstraint]{
     return equalTo(layoutItem, insets: (insets, insets))
   }
   
@@ -159,7 +159,7 @@ final public class YSideAnchor: CompositAnchor{
     return self + inset
   }
   
-  public func insets(_ inset: Double) -> CompositExpression<YSideAnchor, Double>{
+  public func insets(_ inset: Value) -> CompositExpression<YSideAnchor, Value>{
     return self + inset
   }
 
@@ -219,7 +219,7 @@ final public class CompositExpression<AnchorType, valueType>{
   return lhs.equalTo(rhs.anchor, offset: rhs.value)
 }
 
-@discardableResult public func == (lhs: XSideAnchor, rhs: CompositExpression<Layoutable, Double>) -> [LayoutConstraint]{
+@discardableResult public func == (lhs: XSideAnchor, rhs: CompositExpression<Layoutable, Value>) -> [LayoutConstraint]{
   return lhs.equalTo(rhs.anchor, insets: rhs.value)
 }
 
@@ -227,7 +227,7 @@ final public class CompositExpression<AnchorType, valueType>{
   return lhs.equalTo(rhs.anchor, insets: rhs.value)
 }
 
-@discardableResult public func == (lhs: XSideAnchor, rhs: CompositExpression<XSideAnchor, Double>) -> [LayoutConstraint]{
+@discardableResult public func == (lhs: XSideAnchor, rhs: CompositExpression<XSideAnchor, Value>) -> [LayoutConstraint]{
   return lhs.equalTo(rhs.anchor.item, insets: rhs.value)
 }
 
@@ -235,7 +235,7 @@ final public class CompositExpression<AnchorType, valueType>{
   return lhs.equalTo(rhs.anchor, insets: rhs.value)
 }
 
-@discardableResult public func == (lhs: YSideAnchor, rhs: CompositExpression<Layoutable, Double>) -> [LayoutConstraint]{
+@discardableResult public func == (lhs: YSideAnchor, rhs: CompositExpression<Layoutable, Value>) -> [LayoutConstraint]{
   return lhs.equalTo(rhs.anchor, insets: rhs.value)
 }
 
@@ -243,7 +243,7 @@ final public class CompositExpression<AnchorType, valueType>{
   return lhs.equalTo(rhs.anchor, insets: rhs.value)
 }
 
-@discardableResult public func == (lhs: YSideAnchor, rhs: CompositExpression<YSideAnchor, Double>) -> [LayoutConstraint]{
+@discardableResult public func == (lhs: YSideAnchor, rhs: CompositExpression<YSideAnchor, Value>) -> [LayoutConstraint]{
   return lhs.equalTo(rhs.anchor.item, insets: rhs.value)
 }
 
@@ -278,7 +278,7 @@ public extension Array where Element == Layoutable{
     return constraints
   }
   
-  @discardableResult func space(_ space: Double,axis: LayoutAxis = .vertical) -> [LayoutConstraint]{
+  @discardableResult func space(_ space: Value,axis: LayoutAxis = .vertical) -> [LayoutConstraint]{
     return traverse { (preItem, currentItem) -> (LayoutConstraint) in
       switch axis{
       case .horizontal: return currentItem.left == preItem.right + space
