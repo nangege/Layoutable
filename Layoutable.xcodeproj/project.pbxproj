@@ -110,7 +110,7 @@
 		38C105C22139919B00993530 /* Layoutable */ = {
 			isa = PBXGroup;
 			children = (
-				38C105F22139920800993530 /* Layout */,
+				38C105F22139920800993530 /* Sources */,
 				38C105C32139919B00993530 /* Layoutable.h */,
 				38C105C42139919B00993530 /* Info.plist */,
 			);
@@ -127,7 +127,7 @@
 			path = LayoutItemAbleTests;
 			sourceTree = "<group>";
 		};
-		38C105F22139920800993530 /* Layout */ = {
+		38C105F22139920800993530 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				38C105F42139920800993530 /* LayoutEngine.swift */,
@@ -139,7 +139,7 @@
 				38C105F92139920800993530 /* LayoutConstraint.swift */,
 				38C105F32139920800993530 /* CompositAnchor.swift */,
 			);
-			path = Layout;
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		38C10688213999B500993530 /* Frameworks */ = {
