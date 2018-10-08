@@ -72,6 +72,8 @@ final public class LayoutManager{
   /// constraints for this item that need to be added to solver
   private var newAddConstraints = Set<LayoutConstraint>()
   
+  let contentSizeConstraints = ContentSizeConstraints()
+  
   // frequency used Constraint,hold directly to improve performance
   let sizeConstraints = SizeConstraints()
   
@@ -123,21 +125,78 @@ final public class LayoutManager{
     constraints.remove(constraint)
   }
   
-  /// update content size Constraint
-  func updateSize(_ size: CGSize, priority: LayoutPriority = .strong){
+  func updateSize(_ size: CGSize){
     guard let item = item else { return }
-    sizeConstraints.updateSize(size, node: item, priority: priority)
+    contentSizeConstraints.updateSize(size, node: item)
   }
   
-  /// update content size Constraint
-  func updateOrigin(_ point: CGPoint, priority: LayoutPriority = .required){
+  func updateRect(_ rect: CGRect){
     guard let item = item else { return }
-    positionConstraints.updateOrigin(point, node: item, priority: priority)
+    sizeConstraints.updateSize(rect.size, node: item)
+    positionConstraints.updateOrigin(rect.origin, node: item)
   }
   
   /// final caculated rect for this item
   var layoutRect: CGRect{
     return variable.frame
+  }
+}
+
+final class ContentSizeConstraints{
+  // frequency used Constraint,hold directly to improve performance
+  
+  class Axis{
+    var huggingPriorty = LayoutPriority.medium{
+      didSet{
+        if let hugging = hugging{
+          hugging.priority = huggingPriorty
+        }
+      }
+    }
+    
+    var compressionPriorty = LayoutPriority.strong{
+      didSet{
+        if let compression = compression{
+          compression.priority = compressionPriorty
+        }
+      }
+    }
+    
+    var hugging: LayoutConstraint?
+    var compression: LayoutConstraint?
+  }
+  
+  var xAxis = Axis()
+  var yAxis = Axis()
+  
+  /// update content size Constraint
+  func updateSize(_ size: CGSize,node: Layoutable){
+    
+    if size.width != InvalidIntrinsicMetric{
+      if let width = xAxis.hugging,
+         let widthCompression = xAxis.compression{
+        
+        widthCompression.constant = size.width
+        width.constant = size.width
+        
+      }else{
+        xAxis.compression = node.width >= size.width ~ xAxis.compressionPriorty
+        xAxis.hugging =  node.width <= size.width ~ xAxis.huggingPriorty
+      }
+    }
+    
+    if size.height != InvalidIntrinsicMetric{
+      if let height = yAxis.hugging,
+        let heightCompression = yAxis.compression{
+        
+        heightCompression.constant = size.height
+        height.constant = size.height
+        
+      }else{
+        yAxis.compression = node.height >= size.height ~ yAxis.compressionPriorty
+        yAxis.hugging =  node.height <= size.height ~ yAxis.huggingPriorty
+      }
+    }
   }
 }
 

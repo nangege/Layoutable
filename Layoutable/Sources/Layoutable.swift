@@ -70,7 +70,7 @@ extension Layoutable{
   }
   
   /// disable cassowary Layout Enginer
-  /// - Parameter disable: if set to true, all cassowary relate code will return immediately
+  /// - Parameter disable: if set to true, all cassowary related code will return immediately
   /// it is useful when you want to use cached frame to Layout node, rather than caculate again
   public func disableLayout(_ disable: Bool = true){
     manager.enabled = !disable
@@ -147,6 +147,24 @@ extension Layoutable{
     let pinnedToBeRemoved = manager.pinedConstraints.filter{ $0.firstAnchor.item.ancestorItem !== item }
     pinnedToBeRemoved.forEach{ $0.remove() }
     subItems.forEach{ $0.recursivelyReset(from: item)}
+  }
+  
+  public func setContentHuggingPriorty(for axis: LayoutAxis, priorty: LayoutPriority){
+    switch axis {
+    case .horizontal:
+      manager.contentSizeConstraints.xAxis.huggingPriorty = priorty
+    case .vertical:
+      manager.contentSizeConstraints.yAxis.huggingPriorty = priorty
+    }
+  }
+  
+  public func setContentCompressionPriorty(for axis: LayoutAxis, priorty: LayoutPriority){
+    switch axis {
+    case .horizontal:
+      manager.contentSizeConstraints.xAxis.compressionPriorty = priorty
+    case .vertical:
+      manager.contentSizeConstraints.yAxis.compressionPriorty = priorty
+    }
   }
 }
 
@@ -337,9 +355,7 @@ extension Layoutable{
     if manager.layoutNeedsUpdate{
       updateContentSize()
     }else if manager.isRectConstrainted{
-      manager.updateSize(layoutRect.size, priority: .required)
-      manager.updateOrigin(layoutRect.origin)
-      
+      manager.updateRect(layoutRect)
       /// a little weird here, when update size or origin,some constraints will be add to this item
       /// this item's translateRectIntoConstraints will be set to false
       /// correct it here. need a better way.
