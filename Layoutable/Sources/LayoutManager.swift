@@ -99,6 +99,7 @@ final public class LayoutManager{
     // when to add ,when to remove
     self.solver = solver
     variable.solver = solver
+    constraints.forEach{ $0.addToSolver(solver)}
     updateConstraint()
   }
   

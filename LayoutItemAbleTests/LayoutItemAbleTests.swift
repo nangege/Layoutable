@@ -94,8 +94,8 @@ class LayoutableTests: XCTestCase {
         newNode.top >= 20
         newNode.bottom <= node.bottom - 20
         
-        newNode.left == leftNode.left + Double(arc4random()%20)
-        node.top == rightNode.top + Double(arc4random()%20)
+        newNode.left == leftNode.left + CGFloat(arc4random()%20)
+        node.top == rightNode.top + CGFloat(arc4random()%20)
 
         nodes.append(newNode)
       }

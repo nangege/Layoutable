@@ -152,6 +152,7 @@ open class LayoutConstraint{
         }else{
           firstAnchor.item.removeConstraint(self)
           secondAnchor?.item.manager.pinedConstraints.remove(self)
+          try? solver?.remove(constraint: constraint)
         }
       }
     }
@@ -193,6 +194,9 @@ open class LayoutConstraint{
 extension LayoutConstraint{
   
   func addToSolver(_ solver: SimplexSolver){
+    if self.solver === solver{
+      return
+    }
     self.solver = solver
     do{
       try solver.add(constraint: constraint)

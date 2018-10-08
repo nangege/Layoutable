@@ -86,7 +86,9 @@ extension Layoutable{
     
     let item = ancestorItem
     
-    if item.manager.solver == nil{
+    if let solver = item.manager.solver{
+      item.updateSolverIfNeeded(solver)
+    }else{
       let solver = LayoutEngine.solveFor(item)
       solver.autoSolve = false
       item.addConstraintsTo(solver)
@@ -130,17 +132,20 @@ extension Layoutable{
   /// - Parameter item: item from which to break
   public func recursivelyReset(from item: Layoutable){
     manager.solver = nil
-    allConstraints.forEach{ $0.remove()}
-    while let c = manager.constraints.popFirst() {
-      if let secondItem = c.secondAnchor?.item{
+    while let constraint = manager.constraints.popFirst() {
+      constraint.remove()
+      if let secondItem = constraint.secondAnchor?.item{
         if secondItem.ancestorItem === item{
-          addConstraint(c)
+          addConstraint(constraint)
+          secondItem.manager.pinedConstraints.insert(constraint)
         }
+      }else{
+        addConstraint(constraint)
       }
     }
     
-    manager.pinedConstraints = manager.pinedConstraints.filter{ $0.firstAnchor.item.ancestorItem !== item }
-    
+    let pinnedToBeRemoved = manager.pinedConstraints.filter{ $0.firstAnchor.item.ancestorItem !== item }
+    pinnedToBeRemoved.forEach{ $0.remove() }
     subItems.forEach{ $0.recursivelyReset(from: item)}
   }
 }
@@ -318,6 +323,14 @@ extension Layoutable{
   private func updateAllConstraint(){
     updateConstraint()
     manager.updateConstraint()
+  }
+  
+  private func updateSolverIfNeeded(_ solver: SimplexSolver){
+    if manager.solver !== solver{
+      addConstraintsTo(solver)
+      return
+    }
+    subItems.forEach{ $0.updateSolverIfNeeded(solver)}
   }
   
   private func layoutFirstPass(){

@@ -15,7 +15,7 @@ class TestNode: Layoutable{
   
   lazy var manager  = LayoutManager(self)
   
-  var layoutSize = InvaidIntrinsicSize
+  var layoutSize = CGSize(width: InvalidIntrinsicMetric, height: InvalidIntrinsicMetric)
 
   weak var superItem: Layoutable? = nil
   
@@ -30,13 +30,13 @@ class TestNode: Layoutable{
   
   func updateConstraint() {}
   
-  var layoutRect: Rect = RectZero
+  var layoutRect: CGRect = .zero
   
-  var itemIntrinsicContentSize: Size{
+  var itemIntrinsicContentSize: CGSize{
     return layoutSize
   }
   
-  func contentSizeFor(maxWidth: Double) -> Size {
+  func contentSizeFor(maxWidth: CGFloat) -> CGSize {
     return InvaidIntrinsicSize
   }
   
