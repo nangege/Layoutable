@@ -15,7 +15,7 @@ Layoutable is a swift reimplement of apple's Autolayout. It uses the same [Casso
 
 ## Installation
 
-###CocoaPods
+### CocoaPods
 
 [CocoaPods](http://cocoapods.org/) is a dependency manager for Cocoa projects. Install it with the following command:
 
