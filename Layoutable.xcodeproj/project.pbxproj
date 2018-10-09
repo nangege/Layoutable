@@ -12,7 +12,7 @@
 		38335FE22154681D0084DC0C /* LayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38335FE12154681D0084DC0C /* LayoutManager.swift */; };
 		3858B93B213E76D200CE161E /* TestNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3858B93A213E76D200CE161E /* TestNode.swift */; };
 		38C105CA2139919B00993530 /* Layoutable.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38C105C02139919B00993530 /* Layoutable.framework */; };
-		38C105CF2139919B00993530 /* LayoutItemAbleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C105CE2139919B00993530 /* LayoutItemAbleTests.swift */; };
+		38C105CF2139919B00993530 /* LayoutableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C105CE2139919B00993530 /* LayoutableTests.swift */; };
 		38C105D12139919B00993530 /* Layoutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 38C105C32139919B00993530 /* Layoutable.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		38C105FA2139920800993530 /* CompositAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C105F32139920800993530 /* CompositAnchor.swift */; };
 		38C105FB2139920800993530 /* LayoutEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C105F42139920800993530 /* LayoutEngine.swift */; };
@@ -55,7 +55,7 @@
 		38C105C32139919B00993530 /* Layoutable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Layoutable.h; sourceTree = "<group>"; };
 		38C105C42139919B00993530 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		38C105C92139919B00993530 /* LayoutableTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LayoutableTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		38C105CE2139919B00993530 /* LayoutItemAbleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutItemAbleTests.swift; sourceTree = "<group>"; };
+		38C105CE2139919B00993530 /* LayoutableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutableTests.swift; sourceTree = "<group>"; };
 		38C105D02139919B00993530 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		38C105F32139920800993530 /* CompositAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositAnchor.swift; sourceTree = "<group>"; };
 		38C105F42139920800993530 /* LayoutEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutEngine.swift; sourceTree = "<group>"; };
@@ -92,7 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				38C105C22139919B00993530 /* Layoutable */,
-				38C105CD2139919B00993530 /* LayoutItemAbleTests */,
+				38C105CD2139919B00993530 /* LayoutableTests */,
 				38C105C12139919B00993530 /* Products */,
 				38C10688213999B500993530 /* Frameworks */,
 			);
@@ -117,14 +117,14 @@
 			path = Layoutable;
 			sourceTree = "<group>";
 		};
-		38C105CD2139919B00993530 /* LayoutItemAbleTests */ = {
+		38C105CD2139919B00993530 /* LayoutableTests */ = {
 			isa = PBXGroup;
 			children = (
-				38C105CE2139919B00993530 /* LayoutItemAbleTests.swift */,
+				38C105CE2139919B00993530 /* LayoutableTests.swift */,
 				3858B93A213E76D200CE161E /* TestNode.swift */,
 				38C105D02139919B00993530 /* Info.plist */,
 			);
-			path = LayoutItemAbleTests;
+			path = LayoutableTests;
 			sourceTree = "<group>";
 		};
 		38C105F22139920800993530 /* Sources */ = {
@@ -275,7 +275,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				38C105CF2139919B00993530 /* LayoutItemAbleTests.swift in Sources */,
+				38C105CF2139919B00993530 /* LayoutableTests.swift in Sources */,
 				3858B93B213E76D200CE161E /* TestNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -485,13 +485,13 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = LayoutItemAbleTests/Info.plist;
+				INFOPLIST_FILE = LayoutableTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.nange.LayoutItemAbleTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nange.LayoutableTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -510,13 +510,13 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = LayoutItemAbleTests/Info.plist;
+				INFOPLIST_FILE = LayoutableTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.nange.LayoutItemAbleTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nange.LayoutableTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
