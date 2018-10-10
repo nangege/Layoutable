@@ -3,6 +3,7 @@
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![](https://img.shields.io/badge/iOS-8.0%2B-lightgrey.svg)]()
 [![Swift 4.0](https://img.shields.io/badge/Swift-4.2-orange.svg)]()
+<a href="https://travis-ci.org/https://travis-ci.org/nangege/Layoutable"><img src="https://travis-ci.org/nangege/Layoutable.svg?branch=master"></a>
 
 
 

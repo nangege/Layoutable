@@ -114,9 +114,9 @@ open class LayoutConstraint{
     self.multiplier = multiplier
     
     // maybe this code should not be here, need to be fix
-    firstAnchor.item.manager.translateRectIntoConstraints = false
+    firstAnchor.item.layoutManager.translateRectIntoConstraints = false
     firstAnchor.item.addConstraint(self)
-    secondAnchor?.item.manager.pinedConstraints.insert(self)
+    secondAnchor?.item.layoutManager.pinedConstraints.insert(self)
   }
   
   public let firstAnchor: AnchorType
@@ -148,10 +148,10 @@ open class LayoutConstraint{
       if oldValue != isActive{
         if isActive{
           firstAnchor.item.addConstraint(self)
-          secondAnchor?.item.manager.pinedConstraints.insert(self)
+          secondAnchor?.item.layoutManager.pinedConstraints.insert(self)
         }else{
           firstAnchor.item.removeConstraint(self)
-          secondAnchor?.item.manager.pinedConstraints.remove(self)
+          secondAnchor?.item.layoutManager.pinedConstraints.remove(self)
           try? solver?.remove(constraint: constraint)
         }
       }
@@ -228,7 +228,7 @@ extension LayoutConstraint{
   
   public func remove(){
     _ = try? solver?.remove(constraint: constraint)
-    secondAnchor?.item.manager.pinedConstraints.remove(self)
+    secondAnchor?.item.layoutManager.pinedConstraints.remove(self)
     solver = nil
   }
 

@@ -13,7 +13,7 @@ class TestNode: Layoutable{
 
   public init() {}
   
-  lazy var manager  = LayoutManager(self)
+  lazy var layoutManager  = LayoutManager(self)
   
   var layoutSize = CGSize(width: InvalidIntrinsicMetric, height: InvalidIntrinsicMetric)
 

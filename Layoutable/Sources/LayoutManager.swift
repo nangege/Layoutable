@@ -53,35 +53,35 @@ final public class LayoutManager{
   // It is useful for simplefy layout for irregular layout
   public var offset = OffsetZero
   
-  public var fixedWidth = false
+  var fixedWidth = false
   
   /// just like translateAutoSizingMaskIntoConstraints in autolayout
   /// if true, current frame of this item will be added to layout engine
-  public var translateRectIntoConstraints = true
+  var translateRectIntoConstraints = true
   
-  public var enabled = true
+  var enabled = true
   
   /// to indicator whether contentSize of this item is changed
   /// if true, contentSize constraints will be updated
-  public var layoutNeedsUpdate = false
+  var layoutNeedsUpdate = false
   
   /// used to track all consytraints that self if the secondAnchor.item
   var pinedConstraints = Set<LayoutConstraint>()
   
-  /// constraints for this item that has been added to solver
+  /// constraints for this item that had been added to solver
   var installedConstraints = Set<LayoutConstraint>()
   
   /// constraints for this item that need to be added to solver
-  private var newlyAddedConstraints = Set<LayoutConstraint>()
+  var newlyAddedConstraints = Set<LayoutConstraint>()
   
+  /// size constraints for contentSize
   let contentSizeConstraints = ContentSizeConstraints()
   
-  // frequency used Constraint,hold directly to improve performance
+  // size constraints used for frame translated constraint
   let sizeConstraints = SizeConstraints()
   
-  /// used for frame translated constraint
+  /// position constraints used for frame translated constraint
   let positionConstraints = PositionConstraints()
-  
   
   /// whether this item should constrainted by rect translated constraints
   var isRectConstrainted: Bool{
@@ -145,7 +145,6 @@ final public class LayoutManager{
 }
 
 final class ContentSizeConstraints{
-  // frequency used Constraint,hold directly to improve performance
   
   class Axis{
     var huggingPriorty = LayoutPriority.medium{
@@ -203,7 +202,7 @@ final class ContentSizeConstraints{
 }
 
 final class SizeConstraints{
-  // frequency used Constraint,hold directly to improve performance
+
   var width: LayoutConstraint?
   var height: LayoutConstraint?
   

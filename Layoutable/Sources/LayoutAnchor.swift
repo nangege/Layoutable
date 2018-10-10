@@ -41,7 +41,7 @@ public protocol AnchorType: class,CustomDebugStringConvertible{
 
 extension AnchorType{
   func expression() -> Expression{
-    return item.manager.variable.expressionFor(attribue: attribute)
+    return item.layoutManager.variable.expressionFor(attribue: attribute)
   }
   
   func expression(in node: Layoutable?) -> Expression{
@@ -50,8 +50,8 @@ extension AnchorType{
       return expr
     }
     
-    expr.earse(node.manager.variable.x)
-    expr.earse(node.manager.variable.y)
+    expr.earse(node.layoutManager.variable.x)
+    expr.earse(node.layoutManager.variable.y)
     
     if node === item {
       return expr
@@ -62,13 +62,13 @@ extension AnchorType{
     let xExpr = Expression()
     let yExpr = Expression()
     while !(superItem === node)  {
-      xExpr += superItem.manager.variable.x
-      yExpr += superItem.manager.variable.y
+      xExpr += superItem.layoutManager.variable.x
+      yExpr += superItem.layoutManager.variable.y
       assert(superItem.superItem != nil)
       superItem = superItem.superItem!
     }
-    let coffeeX = expr.coefficient(for: item.manager.variable.x)
-    let coffeeY = expr.coefficient(for: item.manager.variable.y)
+    let coffeeX = expr.coefficient(for: item.layoutManager.variable.x)
+    let coffeeY = expr.coefficient(for: item.layoutManager.variable.y)
     expr += coffeeX * xExpr
     expr += coffeeY * yExpr
     return expr

@@ -37,7 +37,7 @@ import Cassowary
 /// any object conform to Layoutable can use constraint to caculate frame
 public protocol Layoutable: class{
 
-  var manager: LayoutManager{ get }
+  var layoutManager: LayoutManager{ get }
   
   var superItem: Layoutable? { get }
   var subItems: [Layoutable]{ get }
@@ -48,7 +48,8 @@ public protocol Layoutable: class{
   /// frame of this item is determined
   func layoutSubItems()
   
-  /// override point.
+  /// override point for add new constraint
+  /// do not use this if not needed
   func updateConstraint()
   
   /// contentSize of node like,just like intrinsicContentSize in UIKit
@@ -66,24 +67,25 @@ public protocol Layoutable: class{
 extension Layoutable{
   
   public var allConstraints: [LayoutConstraint]{
-    return Array(manager.installedConstraints) +  Array(manager.pinedConstraints)
+    return Array(layoutManager.installedConstraints) +  Array(layoutManager.pinedConstraints)
   }
   
   public var fixedWidth: Bool{
-    set{ manager.fixedWidth = fixedWidth }
-    get{ return manager.fixedWidth }
+    set{ layoutManager.fixedWidth = fixedWidth }
+    get{ return layoutManager.fixedWidth }
+  }
+  
+  public var layoutNeedsUpdate: Bool{
+    set{ layoutManager.layoutNeedsUpdate = newValue}
+    get{ return layoutManager.layoutNeedsUpdate }
   }
   
   /// disable cassowary Layout Enginer
   /// - Parameter disable: if set to true, all cassowary related code will return immediately
   /// it is useful when you want to use cached frame to Layout node, rather than caculate again
   public func disableLayout(_ disable: Bool = true){
-    manager.enabled = !disable
+    layoutManager.enabled = !disable
     subItems.forEach{ $0.disableLayout(disable)}
-  }
-  
-  public func markSizeNeedsUpdate(){
-    manager.layoutNeedsUpdate = true
   }
   
   /// just like layutIfNeeded in UIView
@@ -91,11 +93,13 @@ extension Layoutable{
   /// be careful, don't call this if layout hierarchy is not ready
   public func layoutIfEnabled(){
     
-    if !manager.enabled{ return }
+    if !layoutManager.enabled{ return }
     
     let item = ancestorItem
     
-    if let solver = item.manager.solver{
+    /// for newly added Layoutable object
+    /// if item is added after a layout pass,we need to add constraints to solver
+    if let solver = item.layoutManager.solver{
       item.updateSolverIfNeeded(solver)
     }else{
       let solver = LayoutEngine.solveFor(item)
@@ -113,8 +117,8 @@ extension Layoutable{
   /// provide for case of layout cache
   public var layoutValues: LayoutValues{
     var cache = LayoutValues()
-    if manager.isConstraintValidRect{
-      cache.frame = manager.layoutRect
+    if layoutManager.isConstraintValidRect{
+      cache.frame = layoutManager.layoutRect
     }else{
       cache.frame = layoutRect
     }
@@ -134,26 +138,25 @@ extension Layoutable{
   }
   
   
-  /// used when remove item
-  ///
-  //  call this function to remove all constraints for this item and it's subitems from current solver
-  /// and break all constrait with item's supernode
+  /// used for cleaning constraints for removed item
+  //  this function will remove all constraints for this item and it's subitems from current solver
+  /// and break all constraints with item's supernode
   /// - Parameter item: item from which to break
   public func recursivelyReset(from item: Layoutable){
-    manager.solver = nil
-    while let constraint = manager.installedConstraints.popFirst() {
+    layoutManager.solver = nil
+    while let constraint = layoutManager.installedConstraints.popFirst() {
       constraint.remove()
       if let secondItem = constraint.secondAnchor?.item{
         if secondItem.ancestorItem === item{
           addConstraint(constraint)
-          secondItem.manager.pinedConstraints.insert(constraint)
+          secondItem.layoutManager.pinedConstraints.insert(constraint)
         }
       }else{
         addConstraint(constraint)
       }
     }
     
-    let pinnedToBeRemoved = manager.pinedConstraints.filter{ $0.firstAnchor.item.ancestorItem !== item }
+    let pinnedToBeRemoved = layoutManager.pinedConstraints.filter{ $0.firstAnchor.item.ancestorItem !== item }
     pinnedToBeRemoved.forEach{ $0.remove() }
     subItems.forEach{ $0.recursivelyReset(from: item)}
   }
@@ -161,18 +164,36 @@ extension Layoutable{
   public func setContentHuggingPriorty(for axis: LayoutAxis, priorty: LayoutPriority){
     switch axis {
     case .horizontal:
-      manager.contentSizeConstraints.xAxis.huggingPriorty = priorty
+      layoutManager.contentSizeConstraints.xAxis.huggingPriorty = priorty
     case .vertical:
-      manager.contentSizeConstraints.yAxis.huggingPriorty = priorty
+      layoutManager.contentSizeConstraints.yAxis.huggingPriorty = priorty
+    }
+  }
+  
+  public func contentHuggingPriorty(for axis: LayoutAxis) -> LayoutPriority{
+    switch axis {
+    case .horizontal:
+      return layoutManager.contentSizeConstraints.xAxis.huggingPriorty
+    case .vertical:
+      return layoutManager.contentSizeConstraints.yAxis.huggingPriorty
     }
   }
   
   public func setContentCompressionPriorty(for axis: LayoutAxis, priorty: LayoutPriority){
     switch axis {
     case .horizontal:
-      manager.contentSizeConstraints.xAxis.compressionPriorty = priorty
+      layoutManager.contentSizeConstraints.xAxis.compressionPriorty = priorty
     case .vertical:
-      manager.contentSizeConstraints.yAxis.compressionPriorty = priorty
+      layoutManager.contentSizeConstraints.yAxis.compressionPriorty = priorty
+    }
+  }
+  
+  public func contentCompressionPriorty(for axis: LayoutAxis) -> LayoutPriority{
+    switch axis {
+    case .horizontal:
+      return layoutManager.contentSizeConstraints.xAxis.compressionPriorty
+    case .vertical:
+      return layoutManager.contentSizeConstraints.yAxis.compressionPriorty
     }
   }
 }
@@ -257,11 +278,11 @@ extension Layoutable{
 extension Layoutable{
   
   func addConstraint(_ constraint: LayoutConstraint){
-    manager.addConstraint(constraint)
+    layoutManager.addConstraint(constraint)
   }
   
   func removeConstraint(_ constraint: LayoutConstraint){
-    manager.removeConstraint(constraint)
+    layoutManager.removeConstraint(constraint)
   }
   
   func removeConstraints(_ constraints: [LayoutConstraint]){
@@ -321,14 +342,14 @@ extension Layoutable{
   
   private func updateLayout(){
     // need to be optimized
-    if manager.isConstraintValidRect{
-      layoutRect = manager.layoutRect
+    if layoutManager.isConstraintValidRect{
+      layoutRect = layoutManager.layoutRect
     }
     subItems.forEach{ $0.updateLayout() }
   }
   
   private func addConstraintsTo(_ solver: SimplexSolver){
-    manager.addConstraintsTo(solver)
+    layoutManager.addConstraintsTo(solver)
     subItems.forEach { $0.addConstraintsTo(solver) }
   }
   
@@ -341,11 +362,11 @@ extension Layoutable{
   
   private func updateAllConstraint(){
     updateConstraint()
-    manager.updateConstraint()
+    layoutManager.updateConstraint()
   }
   
   private func updateSolverIfNeeded(_ solver: SimplexSolver){
-    if manager.solver !== solver{
+    if layoutManager.solver !== solver{
       addConstraintsTo(solver)
       return
     }
@@ -353,20 +374,20 @@ extension Layoutable{
   }
   
   private func layoutFirstPass(){
-    if manager.layoutNeedsUpdate{
-      if !manager.translateRectIntoConstraints{
+    if layoutNeedsUpdate{
+      if !layoutManager.translateRectIntoConstraints{
         var size = CGSize(width: InvalidIntrinsicMetric, height: 0)
-        if !manager.fixedWidth{
+        if !layoutManager.fixedWidth{
           size = itemIntrinsicContentSize
         }
-        manager.updateSize(size)
+        layoutManager.updateSize(size)
       }
-    }else if manager.isRectConstrainted{
-      manager.updateRect(layoutRect)
+    }else if layoutManager.isRectConstrainted{
+      layoutManager.updateRect(layoutRect)
       /// a little weird here, when update size or origin,some constraints will be add to this item
       /// this item's translateRectIntoConstraints will be set to false
       /// correct it here. need a better way.
-      manager.translateRectIntoConstraints = true
+      layoutManager.translateRectIntoConstraints = true
     }
     updateAllConstraint()
     subItems.forEach { $0.layoutFirstPass() }
@@ -376,19 +397,19 @@ extension Layoutable{
   /// such as TextNode,at this time ,width for textNode is determined
   /// so we can know how manay lines this text should have
   private func layoutSecondPass(){
-    if manager.sizeNeedsUpdate && !manager.translateRectIntoConstraints{
-      var size = contentSizeFor(maxWidth: manager.layoutRect.size.width)
-      if manager.fixedWidth{
+    if layoutManager.sizeNeedsUpdate && !layoutManager.translateRectIntoConstraints{
+      var size = contentSizeFor(maxWidth: layoutManager.layoutRect.size.width)
+      if layoutManager.fixedWidth{
         size = CGSize(width: InvalidIntrinsicMetric, height: size.height)
       }
       
       if size != InvaidIntrinsicSize{
-        manager.updateSize(size)
+        layoutManager.updateSize(size)
       }
     }
     
     subItems.forEach{ $0.layoutSecondPass()}
-    manager.layoutNeedsUpdate = false
+    layoutNeedsUpdate = false
   }
   
 }
