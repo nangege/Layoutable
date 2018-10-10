@@ -110,9 +110,9 @@ On your application targets’ “General” settings tab, in the “Linked Fram
 
       public init() {}
   
-      lazy var manager  = LayoutManager(self)
+      lazy var layoutManager  = LayoutManager(self)
   
-      var layoutSize = InvaidIntrinsicSize
+      var layoutSize = CGSize(width: InvalidIntrinsicMetric, height: InvalidIntrinsicMetric)
 
       weak var superItem: Layoutable? = nil
   
@@ -127,13 +127,13 @@ On your application targets’ “General” settings tab, in the “Linked Fram
   
       func updateConstraint() {}
   
-      var layoutRect: Rect = RectZero
+      var layoutRect: CGRect = .zero
   
-      var itemIntrinsicContentSize: Size{
+      var itemIntrinsicContentSize: CGSize{
         return layoutSize
       }
   
-      func contentSizeFor(maxWidth: Double) -> Size {
+      func contentSizeFor(maxWidth: CGFloat) -> CGSize {
         return InvaidIntrinsicSize
       }
   
