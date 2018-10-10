@@ -66,7 +66,12 @@ public protocol Layoutable: class{
 extension Layoutable{
   
   public var allConstraints: [LayoutConstraint]{
-    return Array(manager.constraints) +  Array(manager.pinedConstraints)
+    return Array(manager.installedConstraints) +  Array(manager.pinedConstraints)
+  }
+  
+  public var fixedWidth: Bool{
+    set{ manager.fixedWidth = fixedWidth }
+    get{ return manager.fixedWidth }
   }
   
   /// disable cassowary Layout Enginer
@@ -75,6 +80,10 @@ extension Layoutable{
   public func disableLayout(_ disable: Bool = true){
     manager.enabled = !disable
     subItems.forEach{ $0.disableLayout(disable)}
+  }
+  
+  public func markSizeNeedsUpdate(){
+    manager.layoutNeedsUpdate = true
   }
   
   /// just like layutIfNeeded in UIView
@@ -132,7 +141,7 @@ extension Layoutable{
   /// - Parameter item: item from which to break
   public func recursivelyReset(from item: Layoutable){
     manager.solver = nil
-    while let constraint = manager.constraints.popFirst() {
+    while let constraint = manager.installedConstraints.popFirst() {
       constraint.remove()
       if let secondItem = constraint.secondAnchor?.item{
         if secondItem.ancestorItem === item{
@@ -323,14 +332,6 @@ extension Layoutable{
     subItems.forEach { $0.addConstraintsTo(solver) }
   }
   
-  private func updateContentSize(){
-    if manager.translateRectIntoConstraints{
-      return
-    }
-    let size = itemIntrinsicContentSize
-    manager.updateSize(size)
-  }
-  
   private var ancestorItem: Layoutable{
     if let superItem = superItem{
       return superItem.ancestorItem
@@ -353,7 +354,13 @@ extension Layoutable{
   
   private func layoutFirstPass(){
     if manager.layoutNeedsUpdate{
-      updateContentSize()
+      if !manager.translateRectIntoConstraints{
+        var size = CGSize(width: InvalidIntrinsicMetric, height: 0)
+        if !manager.fixedWidth{
+          size = itemIntrinsicContentSize
+        }
+        manager.updateSize(size)
+      }
     }else if manager.isRectConstrainted{
       manager.updateRect(layoutRect)
       /// a little weird here, when update size or origin,some constraints will be add to this item
@@ -369,8 +376,12 @@ extension Layoutable{
   /// such as TextNode,at this time ,width for textNode is determined
   /// so we can know how manay lines this text should have
   private func layoutSecondPass(){
-    if manager.sizeNeedsUpdate{
-      let size = contentSizeFor(maxWidth: manager.layoutRect.size.width)
+    if manager.sizeNeedsUpdate && !manager.translateRectIntoConstraints{
+      var size = contentSizeFor(maxWidth: manager.layoutRect.size.width)
+      if manager.fixedWidth{
+        size = CGSize(width: InvalidIntrinsicMetric, height: size.height)
+      }
+      
       if size != InvaidIntrinsicSize{
         manager.updateSize(size)
       }

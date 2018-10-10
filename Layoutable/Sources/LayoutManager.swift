@@ -53,6 +53,8 @@ final public class LayoutManager{
   // It is useful for simplefy layout for irregular layout
   public var offset = OffsetZero
   
+  public var fixedWidth = false
+  
   /// just like translateAutoSizingMaskIntoConstraints in autolayout
   /// if true, current frame of this item will be added to layout engine
   public var translateRectIntoConstraints = true
@@ -67,10 +69,10 @@ final public class LayoutManager{
   var pinedConstraints = Set<LayoutConstraint>()
   
   /// constraints for this item that has been added to solver
-  var constraints = Set<LayoutConstraint>()
+  var installedConstraints = Set<LayoutConstraint>()
   
   /// constraints for this item that need to be added to solver
-  private var newAddConstraints = Set<LayoutConstraint>()
+  private var newlyAddedConstraints = Set<LayoutConstraint>()
   
   let contentSizeConstraints = ContentSizeConstraints()
   
@@ -101,28 +103,28 @@ final public class LayoutManager{
     // when to add ,when to remove
     self.solver = solver
     variable.solver = solver
-    constraints.forEach{ $0.addToSolver(solver)}
+    installedConstraints.forEach{ $0.addToSolver(solver)}
     updateConstraint()
   }
   
   /// add new constraints to current solver
   func updateConstraint(){
     if let solver = self.solver{
-      newAddConstraints.forEach {
+      newlyAddedConstraints.forEach {
         $0.addToSolver(solver)
-        constraints.insert($0)
+        installedConstraints.insert($0)
       }
-      newAddConstraints.removeAll()
+      newlyAddedConstraints.removeAll()
     }
   }
   
   func addConstraint(_ constraint: LayoutConstraint){
-    newAddConstraints.insert(constraint)
+    newlyAddedConstraints.insert(constraint)
   }
   
   func removeConstraint(_ constraint: LayoutConstraint){
-    newAddConstraints.remove(constraint)
-    constraints.remove(constraint)
+    newlyAddedConstraints.remove(constraint)
+    installedConstraints.remove(constraint)
   }
   
   func updateSize(_ size: CGSize){
