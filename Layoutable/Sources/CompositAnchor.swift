@@ -259,7 +259,7 @@ final public class CompositExpression<AnchorType, valueType>{
   return lhs.equalTo(rhs.anchor.item, insets: rhs.value)
 }
 
-public extension Array where Element == Layoutable{
+public extension Array where Element: Layoutable{
   
   public typealias LayoutAction = (_ pre: Layoutable, _ current: Layoutable) -> (LayoutConstraint)
   
