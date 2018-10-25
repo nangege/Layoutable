@@ -71,7 +71,7 @@ extension Layoutable{
   }
   
   public var fixedWidth: Bool{
-    set{ layoutManager.fixedWidth = fixedWidth }
+    set{ layoutManager.fixedWidth = newValue }
     get{ return layoutManager.fixedWidth }
   }
   
