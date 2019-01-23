@@ -236,7 +236,8 @@ extension LayoutConstraint{
     constraints.forEach{ $0.isActive = true}
   }
   
-  @discardableResult func priority(_ priority: LayoutPriority) -> LayoutConstraint{
+  @discardableResult
+  func priority(_ priority: LayoutPriority) -> LayoutConstraint{
     self.priority = priority
     return self
   }
@@ -256,7 +257,8 @@ infix operator ~:TernaryPrecedence
 
 // syntax surge for setPriority
 // item1.left = item2.right + 10 ~ .strong
-@discardableResult public func ~(lhs: LayoutConstraint, rhs: LayoutPriority) -> LayoutConstraint{
+@discardableResult
+public func ~(lhs: LayoutConstraint, rhs: LayoutPriority) -> LayoutConstraint{
   lhs.priority = rhs
   return lhs
 }
