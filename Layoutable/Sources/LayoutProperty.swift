@@ -49,7 +49,7 @@ final class LayoutProperty{
     let minY = solver.valueFor(y)
     let w = solver.valueFor(width)
     let h = solver.valueFor(height)
-    return CGRect(x: minX ?? 0, y: minY ?? 0,width: w ?? 0,height: h ?? 0)
+    return CGRect(x: minX ?? 0, y: minY ?? 0, width: w ?? 0, height: h ?? 0)
   }
   
   func expressionFor(attribue: LayoutAttribute) -> Expression{
