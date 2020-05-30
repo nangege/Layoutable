@@ -244,12 +244,12 @@ extension LayoutConstraint{
 }
 
 extension LayoutConstraint: Hashable{
-  public var hashValue: Int {
-    return  ObjectIdentifier(self).hashValue
+  public static func ==(lhs: LayoutConstraint, rhs: LayoutConstraint) -> Bool {
+    return lhs === rhs
   }
   
-  public static func ==(lhs: LayoutConstraint, rhs: LayoutConstraint) -> Bool {
-    return lhs.hashValue == rhs.hashValue
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(ObjectIdentifier(self))
   }
 }
 

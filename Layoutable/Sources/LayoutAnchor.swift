@@ -32,7 +32,7 @@
 
 import Cassowary
 
-public protocol AnchorType: class,CustomDebugStringConvertible{
+public protocol AnchorType: class, CustomDebugStringConvertible{
   
   var item: Layoutable!{ get set}
   

@@ -65,7 +65,7 @@ final public class LayoutManager{
   /// if true, contentSize constraints will be updated
   var layoutNeedsUpdate = false
   
-  /// used to track all consytraints that self if the secondAnchor.item
+  /// used to track all constraints that secondAnchor.item is self
   var pinedConstraints = Set<LayoutConstraint>()
   
   /// constraints for this item that had been added to solver

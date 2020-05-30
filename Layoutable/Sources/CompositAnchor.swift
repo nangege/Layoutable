@@ -232,12 +232,12 @@ public func == (lhs: SizeAnchor, rhs: CompositExpression<Layoutable, Offset
 }
 
 @discardableResult
-public func == (lhs: PositionAnchor, rhs: CompositExpression<Layoutable,Offset>) -> [LayoutConstraint]{
+public func == (lhs: PositionAnchor, rhs: CompositExpression<Layoutable, Offset>) -> [LayoutConstraint]{
   return lhs.equalTo(rhs.anchor, offset: rhs.value)
 }
 
 @discardableResult
-public func == (lhs: PositionAnchor, rhs: CompositExpression<PositionAnchor,Offset>) -> [LayoutConstraint]{
+public func == (lhs: PositionAnchor, rhs: CompositExpression<PositionAnchor, Offset>) -> [LayoutConstraint]{
   return lhs.equalTo(rhs.anchor, offset: rhs.value)
 }
 
@@ -293,7 +293,7 @@ public func == (lhs: EdgeAnchor, rhs: CompositExpression<EdgeAnchor, EdgeInsets>
 
 public extension Array where Element: Layoutable{
   
-  public typealias LayoutAction = (_ pre: Layoutable, _ current: Layoutable) -> (LayoutConstraint)
+  typealias LayoutAction = (_ pre: Layoutable, _ current: Layoutable) -> (LayoutConstraint)
   
   @discardableResult
   func traverse(action: LayoutAction) -> [LayoutConstraint]{
