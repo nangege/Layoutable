@@ -32,6 +32,7 @@
 /// THE SOFTWARE.
 
 import Cassowary
+import CoreFoundation
 
 /// abstraction for constraint layout Item
 /// any object conform to Layoutable can use constraint to caculate frame

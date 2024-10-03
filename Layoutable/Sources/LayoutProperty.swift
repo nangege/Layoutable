@@ -31,6 +31,7 @@
 /// THE SOFTWARE.
 
 import Cassowary
+import CoreGraphics
 
 final class LayoutProperty{
   

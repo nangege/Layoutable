@@ -31,6 +31,8 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
+import CoreFoundation
+
 // use tuple as data struct to make it easy to write
 // like node.size = (30,30) compare to UIKit node.size = CGSize(width: height: 30)
 public typealias Value = CGFloat

@@ -33,6 +33,8 @@
 /// THE SOFTWARE.
 
 import Cassowary
+import CoreGraphics
+
 
 /// LayoutManager hold and handle all the properties needed for layout
 /// like SimplexSolver, LayoutProperty ...

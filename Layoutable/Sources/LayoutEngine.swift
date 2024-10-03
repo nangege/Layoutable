@@ -32,6 +32,7 @@
 /// THE SOFTWARE.
 
 import Cassowary
+import Foundation
 
 final class LayoutEngine{
   
