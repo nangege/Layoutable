@@ -32,6 +32,7 @@
 /// THE SOFTWARE.
 
 import Cassowary
+import CoreFoundation
 
 public enum LayoutRelation {
   case equal

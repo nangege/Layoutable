@@ -31,8 +31,9 @@
 /// THE SOFTWARE.
 
 import Cassowary
+import CoreFoundation
 
-public protocol AnchorType: class, CustomDebugStringConvertible{
+public protocol AnchorType: AnyObject, CustomDebugStringConvertible{
   
   var item: Layoutable!{ get set}
   
