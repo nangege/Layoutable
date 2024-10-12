@@ -300,10 +300,8 @@ public extension Array where Element: Layoutable{
   @discardableResult
   func traverse(action: LayoutAction) -> [LayoutConstraint]{
     var constraints = [LayoutConstraint]()
-    if count <= 1{
-      return constraints
-    }
-    var preItem = self.first!
+
+    guard var preItem = self.first else { return constraints }
     for item in self{
       if item !== preItem{
         constraints.append(action(preItem, item))
