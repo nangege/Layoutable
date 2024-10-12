@@ -33,12 +33,12 @@
 
 import CoreFoundation
 
-public enum LayoutAxis{
+public enum LayoutAxis {
   case horizontal
   case vertical
 }
 
-public class CompositAnchor{
+public class CompositAnchor {
   let item: Layoutable
   
   public init(item: Layoutable) {
@@ -46,7 +46,7 @@ public class CompositAnchor{
   }
 }
 
-final public class SizeAnchor: CompositAnchor{
+final public class SizeAnchor: CompositAnchor {
   @discardableResult
   public func equalTo(_ size: Size) -> [LayoutConstraint]{
     return [

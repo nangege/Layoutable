@@ -36,7 +36,7 @@ import CoreFoundation
 
 /// abstraction for constraint layout Item
 /// any object conform to Layoutable can use constraint to caculate frame
-public protocol Layoutable: AnyObject{
+public protocol Layoutable: AnyObject {
 
   var layoutManager: LayoutManager{ get }
   

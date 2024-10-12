@@ -59,7 +59,7 @@ extension AnchorType{
     }
     
     assert(item.superItem != nil)
-    var superItem = item.superItem!
+    guard var superItem = item.superItem else { return expr }
     let xExpr = Expression()
     let yExpr = Expression()
     while !(superItem === node)  {
