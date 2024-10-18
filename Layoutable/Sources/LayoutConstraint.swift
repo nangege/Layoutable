@@ -164,7 +164,7 @@ open class LayoutConstraint{
   // translate LayoutConstraint to Constraint
   lazy var constraint: Constraint = {
     
-    var constraint: Constraint!
+    var constraint: Constraint
     let superItem = firstAnchor.item.commonSuperItem(with: secondAnchor?.item)
     
     var lhsExpr = firstAnchor.expression(in: superItem)
